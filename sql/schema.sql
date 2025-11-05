@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE users (
+CREATE TABLE Users (
 	user_id INTEGER PRIMARY KEY,
 	username VARCHAR(20) NOT NULL,
 	email VARCHAR(40) NOT NULL,
@@ -8,35 +8,65 @@ CREATE TABLE users (
 	pfp_filename VARCHAR(64),
 );
 
-CREATE TABLE campaigns (
+CREATE TABLE Pages (
+	page_id INTEGER PRIMARY KEY,
+	page_title VARCHAR(64) NOT NULL,
+);
+
+CREATE TABLE Campaigns (
 	campaign_id INTEGER PRIMARY KEY,
-	map VARCHAR(64) NOT NULL,
+	owner_id INTEGER NOT NULL,
+	page_id INTEGER NOT NULL,
+	created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (owner_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+	FOREIGN KEY (page_id) REFERENCES Pages(page_id) ON DELETE CASCADE,
 
 );
-	
-CREATE TABLE campaign_players (
+
+CREATE TABLE CampaignPlayers (
 	campaign_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL, 
     PRIMARY KEY(campaign_id, user_id)
     FOREIGN KEY(campaign_id) REFERENCES Campaigns(campaign_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-	is_gm INTEGER NOT NULL,
-);
-	
-
-CREATE TABLE npcs (
-	npc_id INTEGER PRIMARY KEY AUTOINCREMENT,
-	campaign_id INTEGER,
-	npc_name VARCHAR(60),
-	npc_art VARCHAR(64),
-	character_sheet VARCHAR(64),
-    FOREIGN KEY(campaign_id) REFERENCES Campaigns(campaign_id) ON DELETE CASCADE,
+	FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
 );
 
-CREATE TABLE characters (
-    character_id INTEGER PRIMARY KEY AUTOINCREMENT,
-	npc_name VARCHAR(60),
-	npc_art VARCHAR(64),
-	character_sheet VARCHAR(64),
+CREATE TABLE Characters (
+	character_id INTEGER PRIMARY KEY,
+	page_id INTEGER NOT NULL,
+	owner_id INTEGER NOT NULL,
+	created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY(page_id) REFERENCES Pages(page_id) ON DELETE CASCADE,
+	FOREIGN KEY(owner_id) REFERENCES Users(user_id) ON DELETE CASCADE,
 );
 
+CREATE TABLE Sessions (
+	session_id INTEGER PRIMARY KEY,
+	campaign_id INTEGER NOT NULL,
+	audio_file VARCHAR(64),
+	FOREIGN KEY (campaign_id) REFERENCES Campaigns(campaign_id) ON DELETE CASCADE,
+);
+
+CREATE TABLE Boxes (
+	box_id INTEGER PRIMARY KEY,
+	page_id INTEGER NOT NULL,
+	show_all_players INTEGER NOT NULL,
+	FOREIGN KEY (page_id) REFERENCES Pages(page_id) ON DELETE CASCADE,
+);
+
+CREATE TABLE Images (
+	image_id INTEGER PRIMARY KEY,
+	box_id INTEGER NOT NULL,
+	image_file VARCHAR(64),
+	FOREIGN KEY(box_id) REFERENCES Boxes(box_id) ON DELETE CASCADE,
+);
+
+CREATE TABLE Texts (
+	text_id INTEGER PRIMARY KEY
+	box_id INTEGER NOT NULL,
+	page_id INTEGER NOT NULL,
+	content VARCHAR(1024),
+	leaf INTEGER NOT NULL,
+	FOREIGN KEY(box_id) REFERENCES Boxes(box_id) ON DELETE CASCADE,
+	FOREIGN KEY(page_id) REFERENCES Pages(page_id) ON DELETE CASCADE,
+);
