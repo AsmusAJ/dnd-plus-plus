@@ -16,7 +16,7 @@ def authenticate():
     user_query = db_connect.execute(
         "SELECT username, password "
         "FROM Users "
-        "WHERE usernae = ?",
+        "WHERE username = ?",
         (auth.username,)
     )
     user = user_query.fetchone()

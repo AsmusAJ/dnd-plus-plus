@@ -1,8 +1,7 @@
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE Users (
-	user_id INTEGER PRIMARY KEY,
-	username VARCHAR(20) NOT NULL,
+	username VARCHAR(20) PRIMARY KEY,
 	email VARCHAR(40) NOT NULL,
 	password VARCHAR(256) NOT NULL,
 	pfp_filename VARCHAR(64),
@@ -15,29 +14,29 @@ CREATE TABLE Pages (
 
 CREATE TABLE Campaigns (
 	campaign_id INTEGER PRIMARY KEY,
-	owner_id INTEGER NOT NULL,
+	username VARCHAR(20) NOT NULL,
 	page_id INTEGER NOT NULL,
 	created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (owner_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+	FOREIGN KEY (owner_username) REFERENCES Users(username) ON DELETE CASCADE,
 	FOREIGN KEY (page_id) REFERENCES Pages(page_id) ON DELETE CASCADE,
 
 );
 
 CREATE TABLE CampaignPlayers (
 	campaign_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL, 
-    PRIMARY KEY(campaign_id, user_id)
+    username VARCHAR(20) NOT NULL, 
+    PRIMARY KEY(campaign_id, username)
     FOREIGN KEY(campaign_id) REFERENCES Campaigns(campaign_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+	FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE,
 );
 
 CREATE TABLE Characters (
 	character_id INTEGER PRIMARY KEY,
 	page_id INTEGER NOT NULL,
-	owner_id INTEGER NOT NULL,
+	username VARCHAR(20) NOT NULL,
 	created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY(page_id) REFERENCES Pages(page_id) ON DELETE CASCADE,
-	FOREIGN KEY(owner_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+	FOREIGN KEY(owner_username) REFERENCES Users(username) ON DELETE CASCADE,
 );
 
 CREATE TABLE Sessions (
