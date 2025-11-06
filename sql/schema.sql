@@ -10,14 +10,16 @@ CREATE TABLE Users (
 CREATE TABLE Pages (
 	page_id INTEGER PRIMARY KEY,
 	page_title VARCHAR(64) NOT NULL,
+	owner_username VARCHAR(20) NOT NULL,
+	FOREIGN KEY (owner_username) REFERENCES Users(username) ON DELETE CASCADE,
+
 );
 
 CREATE TABLE Campaigns (
 	campaign_id INTEGER PRIMARY KEY,
-	username VARCHAR(20) NOT NULL,
+	owner_username VARCHAR(20) NOT NULL,
 	page_id INTEGER NOT NULL,
 	created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (owner_username) REFERENCES Users(username) ON DELETE CASCADE,
 	FOREIGN KEY (page_id) REFERENCES Pages(page_id) ON DELETE CASCADE,
 
 );
@@ -33,10 +35,8 @@ CREATE TABLE CampaignPlayers (
 CREATE TABLE Characters (
 	character_id INTEGER PRIMARY KEY,
 	page_id INTEGER NOT NULL,
-	username VARCHAR(20) NOT NULL,
 	created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY(page_id) REFERENCES Pages(page_id) ON DELETE CASCADE,
-	FOREIGN KEY(owner_username) REFERENCES Users(username) ON DELETE CASCADE,
 );
 
 CREATE TABLE Sessions (
@@ -63,9 +63,9 @@ CREATE TABLE Images (
 CREATE TABLE Texts (
 	text_id INTEGER PRIMARY KEY
 	box_id INTEGER NOT NULL,
-	page_id INTEGER NOT NULL,
-	content VARCHAR(1024),
+	page_id_forward INTEGER NOT NULL,
+	text_content VARCHAR(1024),
 	leaf INTEGER NOT NULL,
 	FOREIGN KEY(box_id) REFERENCES Boxes(box_id) ON DELETE CASCADE,
-	FOREIGN KEY(page_id) REFERENCES Pages(page_id) ON DELETE CASCADE,
+	FOREIGN KEY(page_id_forward) REFERENCES Pages(page_id) ON DELETE CASCADE,
 );
