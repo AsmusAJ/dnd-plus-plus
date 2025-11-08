@@ -2,7 +2,7 @@ import flask
 import ttrpg
 import ttrpg.api.authenticate
 
-@ttrpg.app.route('api/v1/pages/<int:page_id_url_slug/', methods=['GET'])
+@ttrpg.app.route('/api/v1/pages/<int:page_id_url_slug>/', methods=['GET'])
 def get_page(page_id_url_slug):
     conn = ttrpg.model.get_db()
 

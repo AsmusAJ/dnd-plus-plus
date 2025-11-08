@@ -2,7 +2,7 @@ import flask
 import ttrpg
 import ttrpg.api.authenticate
 
-@ttrpg.app.route('api/v1/campaigns/', methods=['GET'])
+@ttrpg.app.route('/api/v1/campaigns/', methods=['GET'])
 def get_campaigns():
     conn = ttrpg.model.get_db()
 
@@ -38,7 +38,7 @@ def get_campaigns():
     }
     return flask.jsonify(**response)
 
-@ttrpg.app.route('api/v1/campaign/<int:campaign_id_url_slug/', methods=['GET'])
+@ttrpg.app.route('/api/v1/campaign/<int:campaign_id_url_slug>/', methods=['GET'])
 def get_campaign(campaign_id_url_slug):
     conn = ttrpg.model.get_db()
 
@@ -98,14 +98,20 @@ def get_campaign(campaign_id_url_slug):
         }
         for box in boxes
     ]
-    
+
+    sessions = conn.execute(
+        "SELECT session_id, audio_file "
+        "FROM Sessions "
+        "WHERE campaign_id = ? "
+    ).fetchall()
 
     response = {
         "page_id": page_id,
         "campaign_id": campaign_id_url_slug,
         "owner_username": owner_username,
         "page_title": page_title,
-        "boxes": results
+        "boxes": results,
+        "sessions": sessions
     }
 
     return flask.jsonify(**response)

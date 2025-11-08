@@ -2,7 +2,7 @@ import flask
 import ttrpg
 import ttrpg.api.authenticate
 
-@ttrpg.app.route('api/v1/characters/', methods=['GET'])
+@ttrpg.app.route('/api/v1/characters/', methods=['GET'])
 def get_characters():
     conn = ttrpg.model.get_db()
 
@@ -38,7 +38,7 @@ def get_characters():
     return flask.jsonify(**response)
 
 
-@ttrpg.app.route('api/v1/character/<int:character_id_url_slug/', methods=['GET'])
+@ttrpg.app.route('/api/v1/character/<int:character_id_url_slug>/', methods=['GET'])
 def get_character(character_id_url_slug):
     conn = ttrpg.model.get_db()
 

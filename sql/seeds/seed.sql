@@ -71,9 +71,9 @@ VALUES
 (8, 1), -- box for keeper
 (2, 1); -- box for truckers paradise
 
-INSERT INTO Images (page_id)
+INSERT INTO Images (image_id, box_id)
 VALUES
-(1);
+(1, 3);
 
 INSERT INTO Texts (box_id, page_id_forward, text_content, leaf)
 VALUES

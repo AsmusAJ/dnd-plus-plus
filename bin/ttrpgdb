@@ -23,7 +23,7 @@ case $1 in
   "create")
     mkdir -p var/uploads
     sqlite3 var/ttrpg.sqlite3 < sql/schema.sql
-    sqlite3 var/ttrpg.sqlite3 < sql/data.sql
+    sqlite3 var/ttrpg.sqlite3 < sql/seeds/seed.sql
     cp sql/uploads/* var/uploads/
     ;;
 
@@ -35,7 +35,7 @@ case $1 in
     rm -rf var/ttrpg.sqlite3 var/uploads
     mkdir -p var/uploads
     sqlite3 var/ttrpg.sqlite3 < sql/schema.sql
-    sqlite3 var/ttrpg.sqlite3 < sql/data.sql
+    sqlite3 var/ttrpg.sqlite3 < sql/seeds/seed.sql
     cp sql/uploads/* var/uploads/
     ;;
 

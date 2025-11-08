@@ -1,0 +1,11 @@
+#!/bin/bash
+# ttrpg
+
+if [ ! -f var/ttrpg.sqlite3 ]; then
+  echo -e "Error: can't find database var/ttrpg.sqlite3 \nTry: ./bin/ttrpgdb create"
+  exit 1
+fi
+
+# npx webpack --watch &
+
+flask --app ttrpg --debug run --host 0.0.0.0 --port 8000
