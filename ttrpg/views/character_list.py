@@ -3,7 +3,7 @@ import ttrpg
 import ttrpg.api.authenticate
 
 @ttrpg.app.route('/users/<user_url_slug>/characters/')
-def get_characters(user_url_slug):
+def show_characters(user_url_slug):
     conn = ttrpg.model.get_db()
 
     # if 'username' not in flask.session:
@@ -29,7 +29,7 @@ def get_characters(user_url_slug):
         {
             "page_id": character["page_id"],
             "character_id": character["character_id"],
-            "owner_id": character["owner_id"],
+            "owner_username": character["owner_username"],
             "page_title": character["page_title"],
             "created": character["created"]
         }
@@ -39,4 +39,5 @@ def get_characters(user_url_slug):
     response = {
         "characters": results
     }
-    return flask.jsonify(**response)
+
+    return flask.render_template("char_list.html", **response)

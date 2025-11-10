@@ -43,5 +43,5 @@ def show_campaigns(user_url_slug):
         "campaigns": results
     }
     
-    return flask.render_template("homepage.html", **response)
+    return flask.render_template("camp_list.html", **response)
     
