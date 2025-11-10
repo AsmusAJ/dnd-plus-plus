@@ -73,4 +73,4 @@ def get_character(character_id_url_slug, user_url_slug):
         "boxes": results
     }
 
-    return flask.jsonify(**response)
+    return flask.render_template("character_page.html", **response)

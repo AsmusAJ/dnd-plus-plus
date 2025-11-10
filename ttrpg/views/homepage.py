@@ -1,8 +1,8 @@
 import flask
 import ttrpg
 
-@ttrpg.app.route('/')
-def show_homepage():
+@ttrpg.app.route('/users/<user_url_slug>/')
+def show_homepage(user_url_slug):
 
     # if 'username' not in flask.session:
     #     return flask.redirect("/accounts/login/")
