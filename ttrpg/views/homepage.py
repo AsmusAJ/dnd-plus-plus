@@ -44,7 +44,9 @@ def show_homepage(user_url_slug):
         "SELECT c.character_id, c.page_id, p.owner_username, c.created, p.page_title "
         "FROM Characters c " 
         "JOIN Pages p ON c.page_id = p.page_id "
-        "WHERE (p.owner_username = ?) ",
+        "WHERE (p.owner_username = ?) "
+        "ORDER BY c.created DESC "
+        "LIMIT 3",
         (username,)
     )
 
