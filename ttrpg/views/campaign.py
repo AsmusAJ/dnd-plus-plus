@@ -81,4 +81,4 @@ def get_campaign(user_url_slug, campaign_id_url_slug):
         "sessions": sessions
     }
 
-    return flask.jsonify(**response)
+    return flask.render_template("campaign_page.html", **response)
