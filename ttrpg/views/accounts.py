@@ -82,6 +82,7 @@ def handle_create():
         path = save_file(fileobj, filename)
 
     password_hash = hash_password(password)
+    print(password_hash)
     connection = ttrpg.model.get_db()
     connection.execute(
         "INSERT INTO Users (username, email, pfp_filename, password) "

@@ -1,9 +1,15 @@
 INSERT INTO Users (username, email, password)
 VALUES 
-('asmusaj', 'asmusaj@gmail.com', 'MattIsCute'),
-('Matt', 'mattness@gmail.com', 'BakuDeku15'),
-('truck', 'truckerman@gmail.com', 'whoamIWhere1sTh1s'),
-('3v31YN3', 'cahee@gmail.com', 'chickenFinger1!');
+('asmusaj', 'asmusaj@gmail.com', 'sha512$f0aa362200ab4e81ae663c440618015e$567d1461a43e0bc1f7a80a55bbc123a05e0a4d20a6075222d8d1542ab7c7b579a95d64d44f61c2d2f93788350e00583d8ad0c0384b5063b2dc493ec2a9ca7808'),
+('Matt', 'mattness@gmail.com', 'sha512$1eef18cb8c744a70853168af5099f7df$91fa5c8a18d99407e9ebd4f2df82b4c1112baa1ed8b89852144f984b5cd5c63082f6eb2260a08d78a9c0324e875fad47082a93c7fc79d030c689c753ffa95445'),
+('truck', 'truckerman@gmail.com', 'sha512$ac9274daa0f54327992c8a4d7b77f773$ddaeddb9684dc9c0ae16fc0592b87193d0933f2d63778e496d370c8ad0f15720f8dbc4bfbd3d16e52139fbd552899fe66bced16921e244d2b6178dbbd55cc37b'),
+('3v31YN3', 'cahee@gmail.com', 'sha512$ffe5dd0630ac490ea3613c5524a8aa98$72364d059e39ec8b103e0d6a23d2fb7466bc9bc251a578fec1ecd186f1896460a721a3991b78a44c40624f780bcdf2be675f7d018c71d960cc033650ff1e55c6');
+/* 
+asmusaj password is MattIsCute
+Matt password is BakuDeku15
+truck password is whoamIWhere1sTh1s
+3v31YN3 password is chickenFinger1!
+*/
 
 INSERT INTO Pages (page_title, owner_username)
 VALUES
