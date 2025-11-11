@@ -6,11 +6,9 @@ import ttrpg.api.authenticate
 def show_characters(user_url_slug):
     conn = ttrpg.model.get_db()
 
-    # if 'username' not in flask.session:
-    #     return flask.redirect("/accounts/login/")
-    # username = flask.session['username']
-
-    username = "asmusaj"
+    if 'username' not in flask.session:
+        return flask.redirect("/accounts/login/")
+    username = flask.session['username']
 
     if username != user_url_slug: 
         return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403

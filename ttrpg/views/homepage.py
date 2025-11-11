@@ -7,8 +7,6 @@ def show_homepage():
     if 'username' not in flask.session:
         return flask.redirect("/accounts/login/")
 
-    # username = "asmusaj"
-
     conn = ttrpg.model.get_db()
 
     username = ttrpg.api.authenticate.authenticate()
