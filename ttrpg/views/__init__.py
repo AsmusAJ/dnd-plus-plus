@@ -1,4 +1,10 @@
-
+from ttrpg.views.accounts_auth import accounts_auth
+from ttrpg.views.accounts import accounts
+from ttrpg.views.account_login import show_accounts_login
 from ttrpg.views.homepage import show_homepage
 from ttrpg.views.campaigns_list import show_campaigns
+from ttrpg.views.campaign import show_campaign
 from ttrpg.views.character_list import show_characters
+from ttrpg.views.character import show_character
+from ttrpg.views.login import login
+from ttrpg.views.account_create import show_accounts_create

@@ -2,7 +2,7 @@ import flask
 import ttrpg
 
 @ttrpg.app.route('/users/<user_url_slug>/character/<int:character_id_url_slug>/', methods=['GET'])
-def get_character(character_id_url_slug, user_url_slug):
+def show_character(character_id_url_slug, user_url_slug):
     conn = ttrpg.model.get_db()
 
     # if 'username' not in flask.session:
