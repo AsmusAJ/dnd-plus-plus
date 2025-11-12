@@ -63,7 +63,7 @@ def handle_login():
 
     # session cookie
     flask.session['username'] = username
-    return flask.redirect(flask.request.args.get("target", "/"))
+    return flask.redirect("/")
 
 
 def handle_create():
