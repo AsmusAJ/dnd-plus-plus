@@ -25,18 +25,19 @@ def show_page(user_url_slug, page_id_url_slug):
 
     owner_username = page["owner_username"]
 
+    #I removed this as any player needs to see nested pages
     # Checks if user owns the page
-    if username != owner_username:
-        return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
+    #if username != owner_username:
+    #    return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
 
     page_title = page["page_title"]
 
     boxes_query = conn.execute(
-        "SELECT b.box_id, b.page_id, b.show_all_players, t.text_id, t.text_content, "
+        "SELECT b.box_id, b.page_id, b.show_all_players, b.box_title, t.text_id, t.text_content, "
         "t.page_id_forward, t.leaf, i.image_id, i.image_file "
         "FROM Boxes b "
-        "JOIN Texts t ON b.box_id = t.box_id "
-        "JOIN Images i ON b.box_id = i.box_id "
+        "LEFT JOIN Texts t ON b.box_id = t.box_id "
+        "LEFT JOIN Images i ON b.box_id = i.box_id "
         "WHERE b.page_id = ? ",
         (page_id,)
     )
@@ -46,6 +47,7 @@ def show_page(user_url_slug, page_id_url_slug):
     results = [
         {
             "box_id": box["box_id"],
+            "box_title": box["box_title"],
             "show_all_players": box["show_all_players"],
             "text_id": box["text_id"],
             "text": box["text_content"],

@@ -5,13 +5,12 @@ import ttrpg
 def show_character(character_id_url_slug, user_url_slug):
     conn = ttrpg.model.get_db()
 
-    #if 'username' not in flask.session:
-    #    return flask.redirect("/accounts/login/")
-    #username = flask.session['username']
-    username = 'asmusaj'
+    if 'username' not in flask.session:
+        return flask.redirect("/accounts/login/")
+    username = flask.session['username']
 
-    #if username != user_url_slug: 
-    #    return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
+    if username != user_url_slug: 
+        return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
 
     permission_query = conn.execute(
         "SELECT owner_username "
@@ -20,9 +19,10 @@ def show_character(character_id_url_slug, user_url_slug):
         (username, character_id_url_slug,)
     ).fetchone()
 
+    #removed as any character should be able to view basic details on a characters
     # Checks if user has access to character
-    if username != permission_query["owner_username"]:
-        return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
+    #if username != permission_query["owner_username"]:
+    #    return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
 
     character = conn.execute(
         "SELECT c.page_id, p.owner_username, p.page_title "

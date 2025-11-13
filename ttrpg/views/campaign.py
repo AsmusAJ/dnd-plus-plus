@@ -5,12 +5,11 @@ import ttrpg
 def show_campaign(user_url_slug, campaign_id_url_slug):
     conn = ttrpg.model.get_db()
 
-    #if 'username' not in flask.session:
-    #    return flask.redirect("/accounts/login/")
+    if 'username' not in flask.session:
+        return flask.redirect("/accounts/login/")
     
-    username = 'asmusaj'
 
-    #username = flask.session['username']
+    username = flask.session['username']
 
 
     if username != user_url_slug: 
@@ -86,7 +85,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
     ]
 
     characters = conn.execute(
-        "SELECT d.page_title, d.owner_username "
+        "SELECT p.character_id, d.page_title, d.owner_username "
         "FROM CampaignPlayers p "
         "JOIN Characters c ON p.character_id = c.character_id "
         "JOIN Pages d ON c.page_id = d.page_id "
@@ -96,6 +95,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
 
     characters_results = [
         {
+            "character_id": character["character_id"],
             "character_name": character["page_title"],
             "owner_username": character["owner_username"],
         }

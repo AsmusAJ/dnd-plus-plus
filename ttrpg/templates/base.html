@@ -50,7 +50,8 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'signup' %}active{% endif %}"
-                                href="{{ url_for('signup') }}">Sign Up</a>
+                                href="{{ url_for('login') }}">Sign Up</a>
+                            <!--changed this to login TODO should change back to signup once implemented-->
                         </li>
                     </ul>
                     {% endif %}
