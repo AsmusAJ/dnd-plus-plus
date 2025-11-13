@@ -13,14 +13,14 @@ truck password is whoamIWhere1sTh1s
 
 INSERT INTO Pages (page_title, owner_username)
 VALUES
-('Scorn (Campaign)', 'asmusaj'),
-('Truckers Paradise (Campaign)', 'truck'),
-('Scarlord (player character)', 'asmusaj'),
-('Matt-Chan (player character)', 'asmusaj'),
-('ASMR Goddess (player character)', 'Matt'),
-('Bastion (player character)', 'truck'),
-('Chet (player character)', 'truck'),
-('Keeper of the Crypt (player character)', '3v31YN3'),
+('Scorn', 'asmusaj'),
+('Truckers Paradise', 'truck'),
+('Scarlord', 'asmusaj'),
+('Matt-Chan', 'asmusaj'),
+('ASMR Goddess', 'Matt'),
+('Bastion', 'truck'),
+('Chet', 'truck'),
+('Keeper of the Crypt', '3v31YN3'),
 ('Scorn NPCS', 'asmusaj'),
 ('Scorn Places of Interest', 'asmusaj'),
 ('The Gandy Dancer', 'asmusaj');
