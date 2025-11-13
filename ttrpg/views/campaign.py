@@ -43,7 +43,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
     page_title = campaign["page_title"]
 
     boxes_query = conn.execute(
-        "SELECT b.box_id, b.page_id, b.show_all_players, t.text_id, t.text_content, "
+        "SELECT b.box_id, b.page_id, b.show_all_players, b.box_title, t.text_id, t.text_content, "
         "t.page_id_forward, t.leaf, i.image_id, i.image_file "
         "FROM Boxes b "
         "LEFT JOIN Texts t ON b.box_id = t.box_id "
@@ -57,6 +57,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
     results = [
         {
             "box_id": box["box_id"],
+            "box_title": box["box_title"],
             "show_all_players": box["show_all_players"],
             "text_id": box["text_id"],
             "text": box["text_content"],
@@ -85,13 +86,21 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
     ]
 
     characters = conn.execute(
-        "SELECT page_title, owner_username "
+        "SELECT d.page_title, d.owner_username "
         "FROM CampaignPlayers p "
-        "WHERE campaign_id= ? "
-        "JOIN Characters c ON p.character_id = c.character_id"
-        "JOIN page_id d ON c.page_id"
+        "JOIN Characters c ON p.character_id = c.character_id "
+        "JOIN Pages d ON c.page_id = d.page_id "
+        "WHERE p.campaign_id = ? ",
         (campaign_id_url_slug,)
     ).fetchall()
+
+    characters_results = [
+        {
+            "character_name": character["page_title"],
+            "owner_username": character["owner_username"],
+        }
+        for character in characters
+    ]
 
     response = {
         "page_id": page_id,
@@ -99,7 +108,8 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
         "owner_username": owner_username,
         "page_title": page_title,
         "boxes": results,
-        "sessions": sessions_results
+        "sessions": sessions_results,
+        "characters": characters_results
     }
 
     return flask.render_template("campaign_page.html", **response)

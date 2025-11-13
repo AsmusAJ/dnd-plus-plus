@@ -2,7 +2,7 @@ import flask
 import ttrpg
 
 @ttrpg.app.route('/users/<user_url_slug>/page/<int:page_id_url_slug>/', methods=['GET'])
-def show_campaign(user_url_slug, page_id_url_slug):
+def show_page(user_url_slug, page_id_url_slug):
     conn = ttrpg.model.get_db()
 
     if 'username' not in flask.session:

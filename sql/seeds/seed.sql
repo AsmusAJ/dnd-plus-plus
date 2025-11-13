@@ -31,13 +31,16 @@ VALUES
 ('asmusaj', 1),
 ('truck', 2);
 
+INSERT INTO CampaignPlayers (campaign_id, username)
+VALUES
+(1, 'asmusaj');
+
 INSERT INTO CampaignPlayers (campaign_id, username, character_id)
 VALUES
-(1, 'asmusaj'),
 (1, 'Matt', 3),
-(1, 'truck' 4),
+(1, 'truck', 4),
 (2, 'asmusaj', 1),
-(2, 'truck', 4),
+(2, 'truck', 4);
 
 INSERT INTO CampaignPlayers (campaign_id, username)
 VALUES
@@ -59,18 +62,21 @@ VALUES
 (1, '2025-09-17'),
 (2, '2025-7-08');
 
+INSERT INTO Boxes (page_id, show_all_players, box_title)
+VALUES
+(1, 1, 'Map'), -- box for map for scorn (currently no image file is there)
+(1, 1, 'NPCS'), -- box for npcs in scorn
+(9, 1, 'John the Barkeeper'), -- box for 1st npc in scorn
+(9, 1, 'Teresa the Alchemist'), -- box for 2nd npc in scorn
+(9, 1, 'John Hopkins'), -- box for 3rd npc in scorn
+(1, 0, 'Secret Plotlines'), -- box for Secret Plotlines in Scorn
+(1, 1, 'Places of Interest'), -- box for places of interest in scorn
+(10, 1, 'The Gandy Dancer'), -- box for 1st place of interest in scorn
+(10, 1, 'The Market'), -- box for 2nd place of interest in scorn
+(11, 1, 'NPCS'); -- box for Gandy Dancer NPCS                  10
+
 INSERT INTO Boxes (page_id, show_all_players)
 VALUES
-(1, 1), -- box for map for scorn (currently no image file is there)
-(1, 1), -- box for npcs in scorn
-(9, 1), -- box for 1st npc in scorn
-(9, 1), -- box for 2nd npc in scorn
-(9, 1), -- box for 3rd npc in scorn
-(1, 0), -- box for Secret Plotlines in Scorn
-(1, 1), -- box for places of interest in scorn
-(10, 1), -- box for 1st place of interest in scorn
-(10, 1), -- box for 2nd place of interest in scorn
-(11, 1), -- box for Gandy Dancer NPCS                  10
 (3, 1), -- box for scarlord
 (3, 1), -- box for scarlord
 (4, 1), -- box for matt-chan
@@ -84,19 +90,27 @@ INSERT INTO Images (image_id, box_id)
 VALUES
 (1, 3);
 
+INSERT INTO Texts (box_id, page_id_forward, leaf)
+VALUES
+(2, 9, 0),
+(3, 1, 1),
+(4, 1, 1),
+(5, 1, 1);
+
 INSERT INTO Texts (box_id, page_id_forward, text_content, leaf)
 VALUES
-(2, 9, 'NPCS', 0),
-(3, 1, 'John the Barkeeper', 1),
-(4, 1, 'Teresa the Alchemist', 1),
-(5, 1, 'John Hopkins', 1),
 (6, 1, 
 'Yeah so basically everything is a mimic
 The food is also made of chum'
-, 1), -- secret plotline in scorn
-(7, 10, 'Places of Interest', 0),
-(8, 11, 'The Gandy Dancer', 0),
-(9, 1, 'The Market', 1),
+, 1); -- secret plotline in scorn
+INSERT INTO Texts (box_id, page_id_forward, leaf)
+VALUES
+(7, 10, 0),
+(8, 11, 0),
+(9, 1, 1);
+
+INSERT INTO Texts (box_id, page_id_forward, text_content, leaf)
+VALUES
 (10, 1, 'John Markel, Timothy Chalamet, Tom Brady', 1),
 (11, 1, 'Elven', 1),
 (12, 1, 'Magic user', 1),

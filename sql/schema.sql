@@ -30,8 +30,8 @@ CREATE TABLE CampaignPlayers (
 	character_id INTEGER,
     PRIMARY KEY(campaign_id, username)
     FOREIGN KEY(campaign_id) REFERENCES Campaigns(campaign_id) ON DELETE CASCADE,
-	FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
-	FOREIGN KEY(character) REFERENCES Characters(character_id) ON DELETE CASCADE,
+	FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE,
+	FOREIGN KEY(character_id) REFERENCES Characters(character_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Characters (
@@ -53,6 +53,7 @@ CREATE TABLE Boxes (
 	box_id INTEGER PRIMARY KEY,
 	page_id INTEGER NOT NULL,
 	show_all_players INTEGER NOT NULL,
+	box_title VARCHAR(64),
 	FOREIGN KEY (page_id) REFERENCES Pages(page_id) ON DELETE CASCADE
 );
 

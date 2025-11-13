@@ -8,3 +8,4 @@ from ttrpg.views.character_list import show_characters
 from ttrpg.views.character import show_character
 from ttrpg.views.login import login
 from ttrpg.views.account_create import show_accounts_create
+from ttrpg.views.pages import show_page

@@ -9,7 +9,7 @@
             <h2 class="mb-0 text-center p-4">{{ page_title }}</h2>
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Campaigns</h5>
+                    <h5 class="mb-0">Recent Sessions</h5>
                     <button class="btn">
                         <i class="bi bi-plus-lg fw-bold"></i>
                     </button>
@@ -29,6 +29,53 @@
                     {% endfor %}
                 </div>
             </div>
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 pt-2 pb-2">Characters</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for character in characters %}
+                    <a class="nav-link d-flex justify-content-between align-items-center p-3 fs-5 list-group-item list-group-item-action"
+                        href="{}">
+                        <span class="fs-5">{{ character.character_name }}</span>
+                        <span class="fs-6">Owner: {{ character.owner_username }}</span>
+                    </a>
+                    {% else %}
+                    <div class="card-body text-center p-4">
+                        <p class="mb-0 fs-5">No characters yet.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% for box in boxes %}
+            {% if box.leaf == 0 %} <!--not a leaf-->
+            <a href="{{ url_for('show_page', user_url_slug=session.username, page_id_url_slug=box.page_id_forward) }}"
+                class="text-decoration-none">
+                <div class="card mb-4 hover-card">
+                    {% else %}
+                    <div class="card mb-4">
+                        {% endif %}
+                        {% if box.box_title %}
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 pt-2 pb-2">{{ box.box_title }} {{ leaf }}</h5>
+                        </div>
+                        {% endif %}
+
+                        {% if box.text or box.image_file %}
+                        <div class="card-body">
+                            {% if box.text %}
+                            <span class="fs-6">{{ box.text }}</span>
+                            {% endif %}
+                            {% if box.image_file %}
+                            <!--TODO Implement-->
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if box.leaf == 0 %} <!--not a leaf-->
+            </a>
+            {% endif %}
+            {% endfor %}
         </div>
 </main>
 
