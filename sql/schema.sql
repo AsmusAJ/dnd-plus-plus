@@ -43,6 +43,7 @@ CREATE TABLE Sessions (
 	session_id INTEGER PRIMARY KEY,
 	campaign_id INTEGER NOT NULL,
 	audio_file VARCHAR(64),
+	date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (campaign_id) REFERENCES Campaigns(campaign_id) ON DELETE CASCADE
 );
 

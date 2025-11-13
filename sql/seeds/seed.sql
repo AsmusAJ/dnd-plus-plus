@@ -49,12 +49,12 @@ VALUES
 (7),
 (8);
 
-INSERT INTO Sessions (campaign_id)
+INSERT INTO Sessions (campaign_id, date)
 VALUES
-(1),
-(1),
-(1),
-(2);
+(1, '2025-09-03'),
+(1, '2025-09-16'),
+(1, '2025-09-17'),
+(2, '2025-7-08');
 
 INSERT INTO Boxes (page_id, show_all_players)
 VALUES

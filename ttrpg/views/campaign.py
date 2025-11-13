@@ -69,11 +69,20 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
     ]
 
     sessions = conn.execute(
-        "SELECT session_id, audio_file "
+        "SELECT session_id, audio_file, date "
         "FROM Sessions "
         "WHERE campaign_id = ? ",
         (campaign_id_url_slug,)
     ).fetchall()
+
+    sessions_results = [
+        {
+            "session_id": session["session_id"],
+            "audio_file": session["audio_file"],
+            "date": session["date"],
+        }
+        for session in sessions
+    ]
 
     response = {
         "page_id": page_id,
@@ -81,7 +90,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
         "owner_username": owner_username,
         "page_title": page_title,
         "boxes": results,
-        "sessions": sessions
+        "sessions": sessions_results
     }
 
     return flask.render_template("campaign_page.html", **response)
