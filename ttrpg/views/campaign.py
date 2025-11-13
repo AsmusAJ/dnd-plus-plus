@@ -84,6 +84,15 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
         for session in sessions
     ]
 
+    characters = conn.execute(
+        "SELECT page_title, owner_username "
+        "FROM CampaignPlayers p "
+        "WHERE campaign_id= ? "
+        "JOIN Characters c ON p.character_id = c.character_id"
+        "JOIN page_id d ON c.page_id"
+        (campaign_id_url_slug,)
+    ).fetchall()
+
     response = {
         "page_id": page_id,
         "campaign_id": campaign_id_url_slug,

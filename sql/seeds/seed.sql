@@ -31,13 +31,16 @@ VALUES
 ('asmusaj', 1),
 ('truck', 2);
 
-INSERT INTO CampaignPlayers (campaign_id, username)
+INSERT INTO CampaignPlayers (campaign_id, username, character_id)
 VALUES
 (1, 'asmusaj'),
-(1, 'Matt'),
-(1, 'truck'),
-(2, 'asmusaj'),
-(2, 'truck'),
+(1, 'Matt', 3),
+(1, 'truck' 4),
+(2, 'asmusaj', 1),
+(2, 'truck', 4),
+
+INSERT INTO CampaignPlayers (campaign_id, username)
+VALUES
 (2, '3v31YN3');
 
 INSERT INTO Characters (page_id)
