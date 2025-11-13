@@ -12,14 +12,15 @@ def show_character(character_id_url_slug, user_url_slug):
     if username != user_url_slug: 
         return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
 
-    permission_query = conn.execute(
-        "SELECT owner_username "
-        "FROM Characters "
-        "WHERE owner_username = ? AND character_id = ? ",
-        (username, character_id_url_slug,)
-    ).fetchone()
-
     #removed as any character should be able to view basic details on a characters
+    #permission_query = conn.execute(
+    #    "SELECT owner_username "
+    #    "FROM Characters "
+    #    "WHERE owner_username = ? AND character_id = ? ",
+    #    (username, character_id_url_slug,)
+    #).fetchone()
+
+    
     # Checks if user has access to character
     #if username != permission_query["owner_username"]:
     #    return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
@@ -27,7 +28,7 @@ def show_character(character_id_url_slug, user_url_slug):
     character = conn.execute(
         "SELECT c.page_id, p.owner_username, p.page_title "
         "FROM Characters c "
-        "JOIN Pages p ON c.page_id = p.page_id"
+        "JOIN Pages p ON c.page_id = p.page_id "
         "WHERE c.character_id = ? ",
         (character_id_url_slug,)
     ).fetchone()
@@ -39,11 +40,11 @@ def show_character(character_id_url_slug, user_url_slug):
     page_title = character["page_title"]
 
     boxes_query = conn.execute(
-        "SELECT b.box_id, b.page_id, b.show_all_players, t.text_id, t.text_content, "
+        "SELECT b.box_id, b.page_id, b.show_all_players, b.box_title, t.text_id, t.text_content, "
         "t.page_id_forward, t.leaf, i.image_id, i.image_file "
         "FROM Boxes b "
-        "JOIN Texts t ON b.box_id = t.box_id "
-        "JOIN Images i ON b.box_id = i.box_id "
+        "LEFT JOIN Texts t ON b.box_id = t.box_id "
+        "LEFT JOIN Images i ON b.box_id = i.box_id "
         "WHERE b.page_id = ? ",
         (page_id,)
     )
@@ -53,6 +54,7 @@ def show_character(character_id_url_slug, user_url_slug):
     results = [
         {
             "box_id": box["box_id"],
+            "box_title": box["box_title"],
             "show_all_players": box["show_all_players"],
             "text_id": box["text_id"],
             "text": box["text_content"],
