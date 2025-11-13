@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}DND++ Dashboard{% endblock %}
+
+{% block content %}
+<main class="flex-fill d-flex">
+    <div class="row flex-fill g-0">
+
+        <div id="main-content" class="col-lg-8 offset-lg-2 p-3 p-lg-4">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Campaigns</h5>
+                    <button class="btn">
+                        <i class="bi bi-plus-lg fw-bold"></i>
+                    </button>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for character in characters %}
+                    <a class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action clickable-item"
+                        href="campaign_page.html" data-name="Scorn of Scolia" data-system="System">
+                        <span class="fs-5">Scorn of Scolia</span>
+                        <span class="fs-6">System</span>
+                    </a>
+                    {% endfor %}
+                    <a class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action clickable-item"
+                        href="#" data-name="Campaign 2" data-system="System">
+                        <span class="fs-5">Campaign 2</span>
+                        <span class="fs-6">System</span>
+                    </a>
+
+                    <a class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action clickable-item"
+                        href="#" data-name="Campaign 3" data-system="System">
+                        <span class="fs-5">Campaign 3</span>
+                        <span class="fs-6">System</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="sidebar" class="col-lg-4 d-none bg-light p-4 border-start border-dark">
+            <h4 id="sidebar-title">Character Details</h4>
+            <p id="sidebar-content">Click a character to see their details here.</p>
+            <button id="close-sidebar-btn" class="btn btn-danger">Close</button>
+        </div>
+
+    </div>
+</main>
+
+<script src="../static/js/sidebar_script.js"></script>
+{% endblock %}

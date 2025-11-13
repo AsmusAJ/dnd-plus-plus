@@ -5,10 +5,12 @@ import ttrpg
 def show_campaign(user_url_slug, campaign_id_url_slug):
     conn = ttrpg.model.get_db()
 
-    if 'username' not in flask.session:
-        return flask.redirect("/accounts/login/")
+    #if 'username' not in flask.session:
+    #    return flask.redirect("/accounts/login/")
     
-    username = flask.session['username']
+    username = 'asmusaj'
+
+    #username = flask.session['username']
 
 
     if username != user_url_slug: 
@@ -29,7 +31,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
     campaign = conn.execute(
         "SELECT c.page_id, p.owner_username, p.page_title "
         "FROM Campaigns c "
-        "JOIN Pages p ON c.page_id = p.page_id"
+        "JOIN Pages p ON c.page_id = p.page_id "
         "WHERE c.campaign_id = ? ",
         (campaign_id_url_slug,)
     ).fetchone()
@@ -44,8 +46,8 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
         "SELECT b.box_id, b.page_id, b.show_all_players, t.text_id, t.text_content, "
         "t.page_id_forward, t.leaf, i.image_id, i.image_file "
         "FROM Boxes b "
-        "JOIN Texts t ON b.box_id = t.box_id "
-        "JOIN Images i ON b.box_id = i.box_id "
+        "LEFT JOIN Texts t ON b.box_id = t.box_id "
+        "LEFT JOIN Images i ON b.box_id = i.box_id "
         "WHERE b.page_id = ? ",
         (page_id,)
     )
@@ -69,7 +71,8 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
     sessions = conn.execute(
         "SELECT session_id, audio_file "
         "FROM Sessions "
-        "WHERE campaign_id = ? "
+        "WHERE campaign_id = ? ",
+        (campaign_id_url_slug,)
     ).fetchall()
 
     response = {

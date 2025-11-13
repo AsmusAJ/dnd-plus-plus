@@ -4,15 +4,17 @@ import ttrpg
 @ttrpg.app.route('/')
 def show_homepage():
 
-    if 'username' not in flask.session:
-        return flask.redirect("/accounts/login/")
+    
+    #if 'username' not in flask.session:
+    #    return flask.redirect("/accounts/login/")
 
     conn = ttrpg.model.get_db()
 
-    username = ttrpg.api.authenticate.authenticate()
+    #username = ttrpg.api.authenticate.authenticate()
+    username = 'asmusaj'
 
-    if not username: 
-        return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
+    #if not username: 
+    #    return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
 
     campaign_query = conn.execute(
         "SELECT cp.campaign_id, c.page_id, p.owner_username, c.created, p.page_title "
