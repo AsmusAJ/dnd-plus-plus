@@ -14,7 +14,7 @@ def show_characters(user_url_slug):
         return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
 
     character_query = conn.execute(
-        "SELECT c.character_id, c.page_id, p.owner_username, c.created, p.page_title "
+        "SELECT c.character_id, c.page_id, p.owner_username, c.created, p.page_title, c.character_system "
         "FROM Characters c " 
         "JOIN Pages p ON c.page_id = p.page_id "
         "WHERE (p.owner_username = ?) ",
@@ -29,7 +29,8 @@ def show_characters(user_url_slug):
             "character_id": character["character_id"],
             "owner_username": character["owner_username"],
             "page_title": character["page_title"],
-            "created": character["created"]
+            "created": character["created"],
+            "system": character["character_system"]
         }
         for character in characters
     ]

@@ -14,7 +14,7 @@
                     <a class="nav-link d-flex justify-content-between align-items-center p-4 list-group-item list-group-item-action"
                         href="{{ url_for('show_character', user_url_slug=session.username, character_id_url_slug=character.character_id) }}">
                         <strong class="fs-5">{{ character.page_title }}</strong>
-                        <span class="fs-6">System TEMP</span>
+                        <span class="fs-6">{{ character.system }}</span>
                     </a>
                 </div>
             </div>

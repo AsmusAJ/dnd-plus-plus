@@ -14,7 +14,7 @@
                     <a class="nav-link d-flex justify-content-between align-items-center p-4 list-group-item list-group-item-action"
                         href="{{ url_for('show_campaign', user_url_slug=session.username, campaign_id_url_slug=campaign.campaign_id) }}">
                         <strong class="fs-5">{{ campaign.page_title }}</strong>
-                        <span class="fs-6">System TEMP</span>
+                        <span class="fs-6">{{ campaign.system }}</span>
                     </a>
                 </div>
             </div>

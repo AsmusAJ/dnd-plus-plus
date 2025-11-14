@@ -26,10 +26,10 @@ VALUES
 ('The Gandy Dancer', 'asmusaj');
 
 
-INSERT INTO Campaigns (owner_username, page_id)
+INSERT INTO Campaigns (owner_username, page_id, campaign_system)
 VALUES
-('asmusaj', 1),
-('truck', 2);
+('asmusaj', 1, "Cyberpunk RED"),
+('truck', 2, "Cyberpunk RED");
 
 INSERT INTO CampaignPlayers (campaign_id, username)
 VALUES
@@ -46,20 +46,23 @@ INSERT INTO CampaignPlayers (campaign_id, username)
 VALUES
 (2, '3v31YN3');
 
-INSERT INTO Characters (page_id)
+INSERT INTO Characters (page_id, character_system)
 VALUES
-(3),
-(4),
-(5),
-(6),
-(7),
-(8);
+(3, "Cyberpunk RED"),
+(4, "Cyberpunk RED"),
+(5, "Cyberpunk RED"),
+(6, "Cyberpunk RED"),
+(7, "Cyberpunk RED"),
+(8, "Cyberpunk RED");
 
 INSERT INTO Sessions (campaign_id, date)
 VALUES
 (1, '2025-09-03'),
 (1, '2025-09-16'),
 (1, '2025-09-17'),
+(1, '2025-11-15'),
+(1, '2025-12-01'),
+(1, '2025-12-17'),
 (2, '2025-7-08');
 
 INSERT INTO Boxes (page_id, show_all_players, box_title)

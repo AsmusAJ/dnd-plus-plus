@@ -15,7 +15,7 @@ def show_campaigns(user_url_slug):
 
 
     campaign_query = conn.execute(
-        "SELECT cp.campaign_id, c.page_id, p.owner_username, c.created, p.page_title "
+        "SELECT cp.campaign_id, c.page_id, p.owner_username, c.created, p.page_title, c.campaign_system "
         "FROM CampaignPlayers cp "
         "JOIN Campaigns c ON cp.campaign_id = c.campaign_id "
         "JOIN Pages p ON c.page_id = p.page_id "
@@ -32,7 +32,8 @@ def show_campaigns(user_url_slug):
             "campaign_id": campaign["campaign_id"],
             "owner_username": campaign["owner_username"],
             "page_title": campaign["page_title"],
-            "created": campaign["created"]
+            "created": campaign["created"],
+            "system": campaign["campaign_system"]
         }
         for campaign in campaigns
     ]

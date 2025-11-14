@@ -19,9 +19,9 @@ CREATE TABLE Campaigns (
 	campaign_id INTEGER PRIMARY KEY,
 	owner_username VARCHAR(20) NOT NULL,
 	page_id INTEGER NOT NULL,
+	campaign_system VARCHAR(64),
 	created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (page_id) REFERENCES Pages(page_id) ON DELETE CASCADE
-
 );
 
 CREATE TABLE CampaignPlayers (
@@ -37,6 +37,7 @@ CREATE TABLE CampaignPlayers (
 CREATE TABLE Characters (
 	character_id INTEGER PRIMARY KEY,
 	page_id INTEGER NOT NULL,
+	character_system VARCHAR(64),
 	created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY(page_id) REFERENCES Pages(page_id) ON DELETE CASCADE
 );
