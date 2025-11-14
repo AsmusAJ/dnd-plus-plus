@@ -117,11 +117,11 @@ VALUES
 (10, 1, 'John Markel, Timothy Chalamet, Tom Brady', 1),
 (11, 1, 'Elven', 1),
 (12, 1, 'Magic user', 1),
-(13, 1, 'Bosco', 1),
-(14, 1, 'Breadsticks', 1),
-(15, 1, 'Taste', 1),
-(16, 1, 'rly', 1),
-(17, 1, 'good', 1),
+(13, 1, 'Goblin-type', 1),
+(14, 1, 'Species: Dragonborn', 1),
+(15, 1, 'Born of the fire and brimstone', 1),
+(16, 1, 'placeholder text', 1),
+(17, 1, 'human', 1),
 (18, 1, 'Under Construction little doggy, yeehaw', 1);
 
 
