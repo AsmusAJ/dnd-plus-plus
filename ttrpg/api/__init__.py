@@ -7,3 +7,4 @@ from ttrpg.api import index
 from ttrpg.api import invalid_api
 from ttrpg.api import pages
 from ttrpg.api import save_on_unload
+from ttrpg.api import create_box

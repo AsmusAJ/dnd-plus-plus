@@ -1,0 +1,23 @@
+import flask
+import sqlite3
+import ttrpg
+
+@ttrpg.app.route('/api/v1/create_box', methods=['POST'])
+def create_box():
+    data = flask.request.get_json()
+    pageId = data.get('page_id')
+
+    # Save to SQLite
+    conn = ttrpg.model.get_db()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "INSERT INTO Boxes (page_id, show_all_players, box_title) " \
+        "VALUES (?, 1, 'Add Title')", (pageId,)
+        )
+
+    conn.commit()
+    new_id = cursor.lastrowid
+
+    #We use this because page is unloaded so user cant use response anyway
+    return flask.jsonify({"success": True, "box_id": new_id}), 201  

@@ -82,7 +82,7 @@
                 {% endif %}
                 {% endfor %}
             </div>
-            <div class="card mb-4 hover-card" onclick="newBox()">
+            <div class="card mb-4 hover-card" id="add-card" page-id="{{ page_id }}" onclick="newBox()">
                 <div class="card-header d-flex justify-content-center align-items-center">
                     <i class="bi bi-plus-lg fw-bold"></i>
                 </div>
@@ -90,6 +90,15 @@
         </div>
 </main>
 <script>
+    const textElements = document.getElementsByClassName("text");
+    for (let i = 0; i < textElements.length; i++) {
+        textElements[i].contentEditable = true;
+    }
+    const headerElements = document.getElementsByClassName("header")
+    for (let i = 0; i < headerElements.length; i++) {
+        headerElements[i].contentEditable = true;
+    }
+
     function newBox() {
         const newBox = document.createElement("div");
 
@@ -103,18 +112,18 @@
         </div>
         `;
 
+        // Add to database
+        pageId = document.getElementById("add-card").getAttribute("page-id");
+        const payload = {
+            page_id: pageId
+        };
+
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        navigator.sendBeacon('/api/v1/create_box', blob);
+
         // Add to flexbox container
         document.getElementById("flexContainer").appendChild(newBox);
-    }
-
-    const textElements = document.getElementsByClassName("text");
-    for (let i = 0; i < textElements.length; i++) {
-        textElements[i].contentEditable = true;
-    }
-    const headerElements = document.getElementsByClassName("header")
-    for (let i = 0; i < headerElements.length; i++) {
-        headerElements[i].contentEditable = true;
-    }
+    };
 
     window.addEventListener('beforeunload', function () {
         let allTexts = [];
@@ -143,7 +152,7 @@
 {% endblock %}
 
 <!-- TODO 
- make it so that you can add new boxes
+ make it so that new boxes get saved
  make it so that text body is always there and can be written into
  change link so that you can open in sidebar/fullscreen
  add delete box
