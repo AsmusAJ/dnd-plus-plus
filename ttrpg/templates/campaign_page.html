@@ -7,81 +7,106 @@
     <div class="row justify-content-center">
         <div class="col-lg-8 align-items-center">
             <h2 class="mb-0 text-center p-4">{{ page_title }}</h2>
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Sessions</h5>
-                    <button class="btn">
-                        <i class="bi bi-plus-lg fw-bold"></i>
-                    </button>
-                </div>
-                <div class="list-group list-group-flush">
-
-                    {% for session in sessions %}
-                    <a class="nav-link d-flex justify-content-between align-items-center p-3 fs-5 list-group-item list-group-item-action"
-                        href="#">
-                        <span class="fs-5">{{ session.date }}</span>
-                        <span class="fs-6">No Audio File</span>
-                    </a>
-                    {% else %}
-                    <div class="card-body text-center p-4">
-                        <p class="mb-0 fs-5">No sessions yet.</p>
+            <div class="d-flex flex-column gap-3 mb-4" id="flexContainer">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Sessions</h5>
+                        <button class="btn">
+                            <i class="bi bi-plus-lg fw-bold"></i>
+                        </button>
                     </div>
-                    {% endfor %}
+                    <div class="list-group list-group-flush">
+
+                        {% for session in sessions %}
+                        <a class="nav-link d-flex justify-content-between align-items-center p-3 fs-5 list-group-item list-group-item-action"
+                            href="#">
+                            <span class="fs-5">{{ session.date }}</span>
+                            <span class="fs-6">No Audio File</span>
+                        </a>
+                        {% else %}
+                        <div class="card-body text-center p-4">
+                            <p class="mb-0 fs-5">No sessions yet.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 pt-2 pb-2">Characters</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        {% for character in characters %}
+                        <a class="nav-link d-flex justify-content-between align-items-center p-3 fs-5 list-group-item list-group-item-action"
+                            href="{{ url_for('show_character', user_url_slug=session.username, character_id_url_slug=character.character_id) }}">
+                            <span class="fs-5">{{ character.character_name }}</span>
+                            <span class="fs-6">Owner: {{ character.owner_username }}</span>
+                        </a>
+                        {% else %}
+                        <div class="card-body text-center p-4">
+                            <p class="mb-0 fs-5">No characters yet.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% for box in boxes %}
+                {% if box.show_all_players == 1 or session.username==owner_username %}
+                {% if box.leaf == 0 %} <!--not a leaf-->
+                <a href="{{ url_for('show_page', user_url_slug=session.username, page_id_url_slug=box.page_id_forward) }}"
+                    class="text-decoration-none">
+                    <div class="card hover-card">
+                        {% else %}
+                        <div class="card">
+                            {% endif %}
+                            {% if box.box_title %}
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 pt-2 pb-2 header" box-id="{{ box.box_id }}">{{ box.box_title }} {{ leaf
+                                    }}
+                                </h5>
+                            </div>
+                            {% endif %}
+
+                            {% if box.text or box.image_file %}
+                            <div class="card-body">
+                                {% if box.text %}
+                                <span class="fs-6 text" text-id="{{ box.text_id }}">{{ box.text }}</span>
+                                {% endif %}
+                                {% if box.image_file %}
+                                <!--TODO Implement-->
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% if box.leaf == 0 %} <!--not a leaf-->
+                </a>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="card mb-4 hover-card" onclick="newBox()">
+                <div class="card-header d-flex justify-content-center align-items-center">
+                    <i class="bi bi-plus-lg fw-bold"></i>
                 </div>
             </div>
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 pt-2 pb-2">Characters</h5>
-                </div>
-                <div class="list-group list-group-flush">
-                    {% for character in characters %}
-                    <a class="nav-link d-flex justify-content-between align-items-center p-3 fs-5 list-group-item list-group-item-action"
-                        href="{{ url_for('show_character', user_url_slug=session.username, character_id_url_slug=character.character_id) }}">
-                        <span class="fs-5">{{ character.character_name }}</span>
-                        <span class="fs-6">Owner: {{ character.owner_username }}</span>
-                    </a>
-                    {% else %}
-                    <div class="card-body text-center p-4">
-                        <p class="mb-0 fs-5">No characters yet.</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% for box in boxes %}
-            {% if box.show_all_players == 1 or session.username==owner_username %}
-            {% if box.leaf == 0 %} <!--not a leaf-->
-            <a href="{{ url_for('show_page', user_url_slug=session.username, page_id_url_slug=box.page_id_forward) }}"
-                class="text-decoration-none">
-                <div class="card mb-4 hover-card">
-                    {% else %}
-                    <div class="card mb-4">
-                        {% endif %}
-                        {% if box.box_title %}
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 pt-2 pb-2 header" box-id="{{ box.box_id }}">{{ box.box_title }} {{ leaf }}
-                            </h5>
-                        </div>
-                        {% endif %}
-
-                        {% if box.text or box.image_file %}
-                        <div class="card-body">
-                            {% if box.text %}
-                            <span class="fs-6 text" text-id="{{ box.text_id }}">{{ box.text }}</span>
-                            {% endif %}
-                            {% if box.image_file %}
-                            <!--TODO Implement-->
-                            {% endif %}
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% if box.leaf == 0 %} <!--not a leaf-->
-            </a>
-            {% endif %}
-            {% endif %}
-            {% endfor %}
         </div>
 </main>
 <script>
+    function newBox() {
+        const newBox = document.createElement("div");
+
+        newBox.className = "card";
+        newBox.innerHTML = `
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 pt-2 pb-2 header">Add Title</h5>
+        </div>
+        <div class="card-body">
+            <span class="fs-6 text">Add Content</span>
+        </div>
+        `;
+
+        // Add to flexbox container
+        document.getElementById("flexContainer").appendChild(newBox);
+    }
+
     const textElements = document.getElementsByClassName("text");
     for (let i = 0; i < textElements.length; i++) {
         textElements[i].contentEditable = true;
@@ -119,5 +144,10 @@
 
 <!-- TODO 
  make it so that you can add new boxes
+ make it so that text body is always there and can be written into
  change link so that you can open in sidebar/fullscreen
+ add delete box
+ make sessions = upcoming only show upcoming three
+ make past sessions and show three most recent past sessions
+ 
  -->

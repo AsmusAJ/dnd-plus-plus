@@ -12,7 +12,7 @@ def save_on_unload():
     conn = ttrpg.model.get_db()
     cursor = conn.cursor()
 
-    for header in header:
+    for header in headers:
         boxId = header['id']
         title = header['title']
         cursor.execute("UPDATE Boxes SET box_title=? WHERE box_id=?", (title, boxId))
