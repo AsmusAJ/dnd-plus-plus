@@ -4,6 +4,16 @@
 
 {% block content %}
 <main class="flex-fill">
+    <form
+      action="/character/?target=/users/{{ user_url_slug }}/character/{{ character_id }}/"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <input type="file" name="file" required />
+      <input type="submit" name="submit" value="sign up" />
+      <input type="hidden" name="operation" value="upload" />
+      <input type="hidden" name="page_id" value="{{page_id}}" />
+    </form>
     <div class="row justify-content-center">
         <div class="col-lg-8 align-items-center">
             <h2 class="mb-0 text-center p-4">{{ page_title }}</h2>

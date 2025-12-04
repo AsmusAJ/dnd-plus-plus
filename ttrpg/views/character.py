@@ -1,4 +1,6 @@
 import flask
+import uuid
+import pathlib
 import ttrpg
 
 @ttrpg.app.route('/users/<user_url_slug>/character/<int:character_id_url_slug>/', methods=['GET'])
@@ -69,9 +71,61 @@ def show_character(character_id_url_slug, user_url_slug):
     response = {
         "page_id": page_id,
         "character_id": character_id_url_slug,
+        "user_url_slug": user_url_slug,
         "owner_username": owner_username,
         "page_title": page_title,
         "boxes": results
     }
 
     return flask.render_template("character_page.html", **response)
+
+
+@ttrpg.app.route('/character/', methods=['POST'])
+def character_operations():
+    operation = flask.request.form.get("operation")
+    if operation == "upload":
+        return handle_upload()
+    
+def handle_upload():
+    fileobj = flask.request.files.get('file')
+    if not fileobj.filename:
+        return flask.abort(400)
+
+    # Unpack and save file
+    filename = fileobj.filename
+    path = save_file(fileobj, filename)
+
+    page_id = flask.request.form.get('page_id')
+
+    connection = ttrpg.model.get_db()
+
+    connection.execute(
+        "INSERT INTO Boxes (page_id, show_all_players, box_title) "
+        "VALUES (?, 1, ?) ",
+        (page_id, str(path).split('/')[-1])
+    )
+
+    box_with_id = connection.execute(
+        "SELECT b.box_id "
+        "FROM Boxes b "
+        "WHERE b.page_id = ? AND b.box_title = ? ",
+        (page_id, str(path).split('/')[-1])
+    ).fetchone()
+
+    box_id = box_with_id["box_id"]
+
+    connection.execute(
+        "INSERT INTO Images (box_id, image_file) "
+        "VALUES (?, ?) ",
+        (box_id, str(path))
+    )
+    return flask.redirect(flask.request.args.get("target", "/"))
+
+def save_file(file, filename):
+    """Save file."""
+    stem = uuid.uuid4().hex
+    suffix = pathlib.Path(filename).suffix.lower()
+    uuid_basename = f"{stem}{suffix}"
+    path = ttrpg.app.config["UPLOAD_FOLDER"] / uuid_basename
+    file.save(path)
+    return path
