@@ -58,14 +58,15 @@
                         {% endif %}
                         {% if box.box_title %}
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 pt-2 pb-2">{{ box.box_title }} {{ leaf }}</h5>
+                            <h5 class="mb-0 pt-2 pb-2 header" box-id="{{ box.box_id }}">{{ box.box_title }} {{ leaf }}
+                            </h5>
                         </div>
                         {% endif %}
 
                         {% if box.text or box.image_file %}
                         <div class="card-body">
                             {% if box.text %}
-                            <span class="fs-6">{{ box.text }}</span>
+                            <span class="fs-6 text" text-id="{{ box.text_id }}">{{ box.text }}</span>
                             {% endif %}
                             {% if box.image_file %}
                             <!--TODO Implement-->
@@ -80,4 +81,43 @@
             {% endfor %}
         </div>
 </main>
+<script>
+    const textElements = document.getElementsByClassName("text");
+    for (let i = 0; i < textElements.length; i++) {
+        textElements[i].contentEditable = true;
+    }
+    const headerElements = document.getElementsByClassName("header")
+    for (let i = 0; i < headerElements.length; i++) {
+        headerElements[i].contentEditable = true;
+    }
+
+    window.addEventListener('beforeunload', function () {
+        let allTexts = [];
+        let allHeaders = [];
+
+        for (let i = 0; i < textElements.length; i++) {
+            const textId = textElements[i].getAttribute('text-id');
+            const currentText = textElements[i].innerText;
+            allTexts.push({ id: textId, text: currentText });
+        }
+
+        for (let i = 0; i < headerElements.length; i++) {
+            const boxId = headerElements[i].getAttribute('box-id');
+            const currentHeader = headerElements[i].innerText;
+            allHeaders.push({ id: boxId, title: currentHeader })
+        }
+
+        const payload = {
+            texts: allTexts,
+            headers: allHeaders
+        };
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        navigator.sendBeacon('/api/v1/save_on_unload', blob);
+    });
+</script>
 {% endblock %}
+
+<!-- TODO 
+ make it so that you can add new boxes
+ change link so that you can open in sidebar/fullscreen
+ -->
