@@ -1,24 +1,22 @@
-import Flask, request
+import flask
 import sqlite3
 import ttrpg
 
-@ttrpg.app.route('/save_notes_on_unload', methods=['POST'])
-def save_notes_on_unload():
-    data = request.get_json()
-    notes = data.get('notes', '')
-
-    # In a real app, you'd want to associate the notes with a user ID
-    user_id = 1 # Example, ideally this comes from user session
+@ttrpg.app.route('/api/v1/save_on_unload', methods=['POST'])
+def save_on_unload():
+    data = flask.request.get_json()
+    texts = data.get('texts', [])
 
     # Save to SQLite
-    conn = sqlite3.connect('your_database.db')
+    conn = ttrpg.model.get_db()
     cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO notes (user_id, note_text)
-        VALUES (?, ?)
-        ON CONFLICT(user_id) DO UPDATE SET note_text=excluded.note_text
-    """, (user_id, notes))
+
+    for text in texts:
+        textId = text['id']
+        textContent = text['text']
+        cursor.execute("UPDATE Texts SET text_content=? WHERE text_id=?", (textContent, textId))
     conn.commit()
     conn.close()
 
-    return '', 204  # No content needed
+    #We use this because page is unloaded so user cant use response anyway
+    return '', 204  
