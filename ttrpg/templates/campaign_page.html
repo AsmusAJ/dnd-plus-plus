@@ -50,35 +50,34 @@
                 </div>
                 {% for box in boxes %}
                 {% if box.show_all_players == 1 or session.username==owner_username %}
-                {% if box.leaf == 0 %} <!--not a leaf-->
-                <a href="{{ url_for('show_page', user_url_slug=session.username, page_id_url_slug=box.page_id_forward) }}"
-                    class="text-decoration-none">
-                    <div class="card hover-card">
-                        {% else %}
-                        <div class="card">
-                            {% endif %}
-                            {% if box.box_title %}
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 pt-2 pb-2 header" box-id="{{ box.box_id }}">{{ box.box_title }} {{ leaf
-                                    }}
-                                </h5>
-                            </div>
-                            {% endif %}
-
-                            {% if box.text or box.image_file %}
-                            <div class="card-body">
-                                {% if box.text %}
-                                <span class="fs-6 text" text-id="{{ box.text_id }}">{{ box.text }}</span>
-                                {% endif %}
-                                {% if box.image_file %}
-                                <!--TODO Implement-->
-                                {% endif %}
-                            </div>
-                            {% endif %}
-                        </div>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 pt-2 pb-2 header" box-id="{{ box.box_id }}">{{ box.box_title or 'Add
+                            Title' }}
+                        </h5>
                         {% if box.leaf == 0 %} <!--not a leaf-->
+                        <nav>
+                            <btn>
+                                <img src="/static/images/layout-sidebar-reverse.svg" alt="sidebar"
+                                    style="height:28px; vertical-align:middle; padding-right:8px;">
+                            </btn>
+                            <a
+                                href="{{ url_for('show_page', user_url_slug=session.username, page_id_url_slug=box.page_id_forward) }}">
+                                <img src="/static/images/fullscreen.svg" alt="fullscreen"
+                                    style="height:25px; vertical-align:middle;">
+                            </a>
+                        </nav>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <span class="fs-6 text" text-id="{{ box.text_id }}">
+                            {{ box.text or 'Add Content' }}</span>
+                        {% if box.image_file %}
+                        <!--TODO Implement-->
+                        {% endif %}
+                    </div>
+                </div>
                 </a>
-                {% endif %}
                 {% endif %}
                 {% endfor %}
             </div>
@@ -94,7 +93,7 @@
     for (let i = 0; i < textElements.length; i++) {
         textElements[i].contentEditable = true;
     }
-    const headerElements = document.getElementsByClassName("header")
+    const headerElements = document.getElementsByClassName("header");
     for (let i = 0; i < headerElements.length; i++) {
         headerElements[i].contentEditable = true;
     }
@@ -111,6 +110,7 @@
             <span class="fs-6 text">Add Content</span>
         </div>
         `;
+        newBox.contentEditable = true;
 
         // Add to database
         pageId = document.getElementById("add-card").getAttribute("page-id");
@@ -126,6 +126,10 @@
     };
 
     window.addEventListener('beforeunload', function () {
+        //we redo this to catch newly added items
+        const textElements = document.getElementsByClassName("text");
+        const headerElements = document.getElementsByClassName("header");
+
         let allTexts = [];
         let allHeaders = [];
 
@@ -152,10 +156,11 @@
 {% endblock %}
 
 <!-- TODO 
- make it so that new boxes get saved
- make it so that text body is always there and can be written into
+ fix bug where changes aren't saved on reload
  change link so that you can open in sidebar/fullscreen
  add delete box
+ make sidebar/fullscreen grey if it doesn't exist yet
+
  make sessions = upcoming only show upcoming three
  make past sessions and show three most recent past sessions
  

@@ -17,7 +17,13 @@ def create_box():
         )
 
     conn.commit()
-    new_id = cursor.lastrowid
+    newId = cursor.lastrowid
+
+    cursor.execute(
+        "INSERT INTO Texts (box_id, page_id_forward, text_content, leaf) " \
+        "VALUES (?, 1, 'Add Content', 1)", (newId,)
+        )
+    conn.commit()
 
     #We use this because page is unloaded so user cant use response anyway
-    return flask.jsonify({"success": True, "box_id": new_id}), 201  
+    return flask.jsonify({"success": True, "box_id": newId}), 201  
