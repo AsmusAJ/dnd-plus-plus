@@ -25,5 +25,4 @@ def create_box():
         )
     conn.commit()
 
-    #We use this because page is unloaded so user cant use response anyway
     return flask.jsonify({"success": True, "box_id": newId}), 201  

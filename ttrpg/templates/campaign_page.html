@@ -52,20 +52,38 @@
                 {% if box.show_all_players == 1 or session.username==owner_username %}
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 pt-2 pb-2 header" box-id="{{ box.box_id }}">{{ box.box_title or 'Add
+                        <h5 class="mb-0 pt-2 pb-2 header" box-id="{{ box.box_id }}"
+                            box-title="{{ box.box_title or 'Add Title'}}">{{ box.box_title or 'Add
                             Title' }}
                         </h5>
                         {% if box.leaf == 0 %} <!--not a leaf-->
                         <nav>
-                            <btn>
-                                <img src="/static/images/layout-sidebar-reverse.svg" alt="sidebar"
-                                    style="height:28px; vertical-align:middle; padding-right:8px;">
-                            </btn>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+                                class="bi bi-layout-sidebar-reverse icon-black" viewBox="0 0 16 16">
+                                <path
+                                    d="M16 3a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-5-1v12H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 0h2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2z" />
+                            </svg>
                             <a
                                 href="{{ url_for('show_page', user_url_slug=session.username, page_id_url_slug=box.page_id_forward) }}">
-                                <img src="/static/images/fullscreen.svg" alt="fullscreen"
-                                    style="height:25px; vertical-align:middle;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                    class="bi bi-fullscreen icon-black" viewBox="0 0 16 16">
+                                    <path
+                                        d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5" />
+                                </svg>
                             </a>
+                        </nav>
+                        {% else %}
+                        <nav>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+                                class="bi bi-layout-sidebar-reverse icon-grey" viewBox="0 0 16 16">
+                                <path
+                                    d="M16 3a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-5-1v12H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 0h2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2z" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                class="bi bi-fullscreen icon-grey" viewBox="0 0 16 16">
+                                <path
+                                    d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5" />
+                            </svg>
                         </nav>
                         {% endif %}
                     </div>
@@ -125,6 +143,35 @@
         document.getElementById("flexContainer").appendChild(newBox);
     };
 
+    //listens for clicks on fullscreen icon
+    document.querySelectorAll('.fullscreen-icon').forEach(function (img) {
+        img.addEventListener('click', function (event) {
+            event.preventDefault(); // optional
+
+            // Find the nearest card-header and its header
+            const cardHeader = img.closest('.card-header');
+            const boxTitle = headerTitle.getAttribute('box-title');
+
+            createPage(boxTitle, window.ownerUsername);
+
+            // Optionally proceed with navigation
+            // window.location.href = img.parentElement.getAttribute('href');
+        });
+    });
+
+    //creates and navigates to page
+    function createPage() {
+        pageTitle
+        ownerUsername
+        const payload = {
+            page_title: pageTitle,
+            owner_username: ownerUsername
+        };
+
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        navigator.sendBeacon('/api/v1/create_page', blob);
+    }
+
     window.addEventListener('beforeunload', function () {
         //we redo this to catch newly added items
         const textElements = document.getElementsByClassName("text");
@@ -160,6 +207,10 @@
  change link so that you can open in sidebar/fullscreen
  add delete box
  make sidebar/fullscreen grey if it doesn't exist yet
+
+
+ we need to make sure that the page_owner is the only one who can create a new page
+ if the page owner is not on the page then the icon shouldn't even be shown
 
  make sessions = upcoming only show upcoming three
  make past sessions and show three most recent past sessions

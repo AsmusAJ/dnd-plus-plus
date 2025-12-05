@@ -6,3 +6,11 @@
     cursor: pointer;
     transition: box-shadow 0.2s, border-color 0.2s;
 }
+
+.icon-grey {
+    color: #818487;
+}
+
+.icon-black {
+    color: #000;
+}

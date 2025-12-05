@@ -12,7 +12,6 @@ CREATE TABLE Pages (
 	page_title VARCHAR(64) NOT NULL,
 	owner_username VARCHAR(20) NOT NULL,
 	FOREIGN KEY (owner_username) REFERENCES Users(username) ON DELETE CASCADE
-
 );
 
 CREATE TABLE Campaigns (
