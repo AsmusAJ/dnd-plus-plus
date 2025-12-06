@@ -7,7 +7,7 @@
     <div class=" row justify-content-center">
         <div class="col-lg-8 align-items-center">
             <h2 class="mb-0 text-center p-4" id="title">{{ page_title }}</h2>
-            <div class="d-flex flex-column gap-3 mb-4" id="flexContainer">
+            <div class="d-flex flex-column gap-3 mb-4">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Sessions</h5>
@@ -48,6 +48,12 @@
                         {% endfor %}
                     </div>
                 </div>
+                <div>
+                    <button class="btn btn-secondary" onclick="setLayout('one')">1 Column</button>
+                    <button class="btn btn-secondary" onclick="setLayout('two')">2 Columns</button>
+                </div>
+            </div>
+            <div class="d-flex flex-column gap-3 mb-4" id="flexContainer">
                 {% for box in boxes %}
                 {% if box.show_all_players == 1 or session.username==owner_username %}
                 <div class="card">
@@ -132,6 +138,13 @@
                 const newBox = document.createElement("div");
 
                 newBox.className = "card";
+
+                // ADD 'two-col' CLASS IF IN TWO COLUMN MODE
+                const container = document.getElementById("flexContainer");
+                if (container.classList.contains('flex-row')) {
+                    newBox.classList.add('two-col');
+                }
+
                 newBox.innerHTML = `
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0 pt-2 pb-2 header box-id="${boxId}"
@@ -195,6 +208,18 @@
         window.location.href = `/users/${username}/page/${pageId}/`;
     });
 
+    function setLayout(mode) {
+        const container = document.getElementById('flexContainer');
+        if (mode === 'one') {
+            container.classList.remove('flex-row', 'flex-wrap');
+            container.classList.add('flex-column');
+            Array.from(container.children).forEach(card => card.classList.remove('two-col'));
+        } else if (mode === 'two') {
+            container.classList.remove('flex-column');
+            container.classList.add('flex-row', 'flex-wrap');
+            Array.from(container.children).forEach(card => card.classList.add('two-col'));
+        }
+    }
 
     //creates and navigates to page
     function createPage(boxTitle, boxId) {
@@ -251,13 +276,12 @@
 {% endblock %}
 
 <!-- TODO 
+ general pages
+ add layout options
+ add image support
 
- fix bug where changes aren't saved on reload
- add delete option
 
-make name changeable
 make sessions button work
 make characters dropdown
 make sessions scrollable
-only make content editable for owner
  -->
