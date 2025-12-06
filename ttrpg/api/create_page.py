@@ -5,7 +5,8 @@ import ttrpg
 def create_page():
     data = flask.request.get_json()
     pageTitle = data.get('page_title')
-    ownerUsername = data.get('owner_username')
+    ownerUsername = flask.session['username']
+    boxId = data.get('box_id')
 
     # Save to SQLite
     conn = ttrpg.model.get_db()
@@ -18,5 +19,12 @@ def create_page():
 
     conn.commit()
     newId = cursor.lastrowid
+
+    cursor.execute(
+        "UPDATE Texts " \
+        "SET page_id_forward = ?, leaf = 0 " \
+        "WHERE box_id = ?", (newId, boxId)
+        )
+    conn.commit()
 
     return flask.jsonify({"success": True, "page_id": newId}), 201
