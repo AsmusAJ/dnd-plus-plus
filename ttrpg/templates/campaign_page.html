@@ -58,11 +58,6 @@
                         </h5>
                         {% if box.leaf == 0 %} <!--not a leaf-->
                         <nav>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
-                                class="bi bi-layout-sidebar-reverse icon-black" viewBox="0 0 16 16">
-                                <path
-                                    d="M16 3a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-5-1v12H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 0h2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2z" />
-                            </svg>
                             <a
                                 href="{{ url_for('show_page', user_url_slug=session.username, page_id_url_slug=box.page_id_forward) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
@@ -74,11 +69,6 @@
                         </nav>
                         {% elif session.username==owner_username %}
                         <nav>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
-                                class="bi bi-layout-sidebar-reverse icon-grey" viewBox="0 0 16 16">
-                                <path
-                                    d="M16 3a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-5-1v12H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 0h2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2z" />
-                            </svg>
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                                 class="bi bi-fullscreen icon-grey" viewBox="0 0 16 16">
                                 <path
@@ -147,11 +137,6 @@
                         <h5 class="mb-0 pt-2 pb-2 header box-id="${boxId}"
                                         box-title="Add Title">Add Title</h5>
                         <nav>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
-                                class="bi bi-layout-sidebar-reverse icon-grey" viewBox="0 0 16 16">
-                                <path
-                                    d="M16 3a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-5-1v12H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 0h2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2z" />
-                            </svg>
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                                 class="bi bi-fullscreen icon-grey" viewBox="0 0 16 16">
                                 <path
@@ -195,11 +180,6 @@
                                     box-title="${boxTitle}">${boxTitle}
                                 </h5>
                                 <nav>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
-                                        class="bi bi-layout-sidebar-reverse icon-black" viewBox="0 0 16 16">
-                                        <path
-                                            d="M16 3a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-5-1v12H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 0h2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2z" />
-                                    </svg>
                                     <a
                                         href="/users/${username}/page/${pageId}/">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
