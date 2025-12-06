@@ -7,10 +7,14 @@ def save_on_unload():
     data = flask.request.get_json()
     texts = data.get('texts', [])
     headers = data.get('headers', [])
+    page_title = data.get('page_title')
+    pageId = data.get('page_id')
 
     # Save to SQLite
     conn = ttrpg.model.get_db()
     cursor = conn.cursor()
+
+    cursor.execute("UPDATE Pages SET page_title=? WHERE page_id=?", (page_title, pageId))
 
     for header in headers:
         boxId = header['id']

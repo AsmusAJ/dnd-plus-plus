@@ -6,7 +6,7 @@
 <main class="flex-fill" username="{{ session.username }}">
     <div class=" row justify-content-center">
         <div class="col-lg-8 align-items-center">
-            <h2 class="mb-0 text-center p-4">{{ page_title }}</h2>
+            <h2 class="mb-0 text-center p-4" id="title">{{ page_title }}</h2>
             <div class="d-flex flex-column gap-3 mb-4" id="flexContainer">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -72,7 +72,7 @@
                                 </svg>
                             </a>
                         </nav>
-                        {% else %}
+                        {% elif session.username==owner_username %}
                         <nav>
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
                                 class="bi bi-layout-sidebar-reverse icon-grey" viewBox="0 0 16 16">
@@ -98,21 +98,29 @@
                 {% endif %}
                 {% endfor %}
             </div>
+            {% if session.username==owner_username %}
             <div class="card mb-4 hover-card" id="add-card" page-id="{{ page_id }}" onclick="newBox()">
                 <div class="card-header d-flex justify-content-center align-items-center">
                     <i class="bi bi-plus-lg fw-bold"></i>
                 </div>
             </div>
+            {% endif %}
         </div>
 </main>
 <script>
-    const textElements = document.getElementsByClassName("text");
-    for (let i = 0; i < textElements.length; i++) {
-        textElements[i].contentEditable = true;
-    }
-    const headerElements = document.getElementsByClassName("header");
-    for (let i = 0; i < headerElements.length; i++) {
-        headerElements[i].contentEditable = true;
+    const userOwnsPage = {{ (session.username == owner_username) | tojson }};
+</script>
+<script>
+    if (userOwnsPage) {
+        const textElements = document.getElementsByClassName("text");
+        for (let i = 0; i < textElements.length; i++) {
+            textElements[i].contentEditable = true;
+        }
+        const headerElements = document.getElementsByClassName("header");
+        for (let i = 0; i < headerElements.length; i++) {
+            headerElements[i].contentEditable = true;
+        }
+        document.getElementById("title").contentEditable = true;
     }
 
     function newBox() {
@@ -224,49 +232,52 @@
             .then(response => response.json())
             .then(data => data.page_id);
     }
+    if (userOwnsPage) {
+        window.addEventListener('beforeunload', function () {
+            //we redo this to catch newly added items
+            const textElements = document.getElementsByClassName("text");
+            const headerElements = document.getElementsByClassName("header");
 
-    window.addEventListener('beforeunload', function () {
-        //we redo this to catch newly added items
-        const textElements = document.getElementsByClassName("text");
-        const headerElements = document.getElementsByClassName("header");
+            let allTexts = [];
+            let allHeaders = [];
 
-        let allTexts = [];
-        let allHeaders = [];
+            for (let i = 0; i < textElements.length; i++) {
+                const textId = textElements[i].getAttribute('text-id');
+                const currentText = textElements[i].innerText;
+                allTexts.push({ id: textId, text: currentText });
+            }
 
-        for (let i = 0; i < textElements.length; i++) {
-            const textId = textElements[i].getAttribute('text-id');
-            const currentText = textElements[i].innerText;
-            allTexts.push({ id: textId, text: currentText });
-        }
+            for (let i = 0; i < headerElements.length; i++) {
+                const boxId = headerElements[i].getAttribute('box-id');
+                const currentHeader = headerElements[i].innerText;
+                allHeaders.push({ id: boxId, title: currentHeader })
+            }
 
-        for (let i = 0; i < headerElements.length; i++) {
-            const boxId = headerElements[i].getAttribute('box-id');
-            const currentHeader = headerElements[i].innerText;
-            allHeaders.push({ id: boxId, title: currentHeader })
-        }
+            let pageTitle = document.getElementById("title").innerText;
 
-        const payload = {
-            texts: allTexts,
-            headers: allHeaders
-        };
-        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-        navigator.sendBeacon('/api/v1/save_on_unload', blob);
-    });
+            let pageId = document.getElementById("add-card").getAttribute("page-id");
+
+            const payload = {
+                texts: allTexts,
+                headers: allHeaders,
+                page_title: pageTitle,
+                page_id: pageId
+            };
+            const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+            navigator.sendBeacon('/api/v1/save_on_unload', blob);
+        });
+    }
 </script>
 {% endblock %}
 
 <!-- TODO 
-PickUp:
- fix it so that when a new box is added it has an id and a title
 
  fix bug where changes aren't saved on reload
- change link so that you can open in sidebar/fullscreen
- add delete box
+ add delete option
 
- we need to make sure that the page_owner is the only one who can create a new page
- if the page owner is not on the page then the icon shouldn't even be shown
-
- make sessions = upcoming only show upcoming three
- make past sessions and show three most recent past sessions
- 
+make name changeable
+make sessions button work
+make characters dropdown
+make sessions scrollable
+only make content editable for owner
  -->
