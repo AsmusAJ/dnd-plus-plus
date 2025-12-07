@@ -20,3 +20,8 @@
     flex: 0 0 48%;
     margin-bottom: 1rem;
 }
+
+.fixed-img {
+    max-height: 400px;
+    max-width: 100%;
+}
