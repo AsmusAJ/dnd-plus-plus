@@ -85,10 +85,19 @@
                     </div>
                     <div class="card-body">
                         <span class="fs-6 text" text-id="{{ box.text_id }}">
-                            {{ box.text or 'Add Content' }}</span>
+                            {{ box.text or 'Add Content' }}{{box.image_file}}</span>
                         {% if box.image_file %}
-                        <!--TODO Implement-->
+                        <img src="{{ url_for('uploaded_image_route', filename=box.image_file) }}" alt="Box Image"
+                            style="max-width:100%;">
                         {% endif %}
+                        {{ box.box_id }} {{box.image_file}}
+                        <form action="/api/v1/upload_image?target={{ request.path }}" method="post"
+                            enctype="multipart/form-data">
+                            <input type="file" name="file" required />
+                            <input type="submit" name="submit" value="submit" />
+                            <input type="hidden" name="operation" value="upload" />
+                            <input type="hidden" name="box_id" value="{{box.box_id}}" />
+                        </form>
                     </div>
                 </div>
                 {% endif %}
@@ -277,9 +286,7 @@
 
 <!-- TODO 
  general pages
- add layout options
  add image support
-
 
 make sessions button work
 make characters dropdown
