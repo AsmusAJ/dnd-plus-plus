@@ -3,45 +3,78 @@
 {% block title %}DND++ Dashboard{% endblock %}
 
 {% block content %}
-<main class="flex-fill">
-    <div class="row justify-content-center">
+<main class="flex-fill" username="{{ session.username }}">
+    <div class=" row justify-content-center">
         <div class="col-lg-8 align-items-center">
-            <h2 class="mb-0 text-center p-4">{{ page_title }}</h2>
-            {% for box in boxes %}
-            {% if box.show_all_players == 1 or session.username==owner_username %}
-            {% if box.leaf == 0 %} <!--not a leaf-->
-            <a href="{{ url_for('show_page', user_url_slug=session.username, page_id_url_slug=box.page_id_forward) }}"
-                class="text-decoration-none">
-                <div class="card mb-4 hover-card">
-                    {% else %}
-                    <div class="card mb-4">
-                        {% endif %}
-                        {% if box.box_title %}
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 pt-2 pb-2">{{ box.box_title }} {{ leaf }}</h5>
-                        </div>
-                        {% endif %}
-
-                        {% if box.text or box.image_file %}
-                        <div class="card-body">
-                            {% if box.text %}
-                            <span class="fs-6">{{ box.text }}</span>
-                            {% endif %}
-                            {% if box.image_file %}
-                            <!--TODO Implement-->
-                            {% endif %}
-                        </div>
+            <h2 class="mb-0 text-center p-4" id="title">{{ page_title }}</h2>
+            <div class="d-flex flex-column gap-3 mb-4">
+                <div>
+                    <button class="btn btn-secondary" onclick="setLayout('one')">1 Column</button>
+                    <button class="btn btn-secondary" onclick="setLayout('two')">2 Columns</button>
+                </div>
+            </div>
+            <div class="d-flex flex-column gap-3 mb-4" id="flexContainer">
+                {% for box in boxes %}
+                {% if box.show_all_players == 1 or session.username==owner_username %}
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 pt-2 pb-2 header" box-id="{{ box.box_id }}"
+                            box-title="{{ box.box_title or 'Add Title'}}">{{ box.box_title or 'Add
+                            Title' }}
+                        </h5>
+                        {% if box.leaf == 0 %} <!--not a leaf-->
+                        <nav>
+                            <a
+                                href="{{ url_for('show_page', user_url_slug=session.username, page_id_url_slug=box.page_id_forward) }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                    class="bi bi-fullscreen icon-black" viewBox="0 0 16 16">
+                                    <path
+                                        d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5" />
+                                </svg>
+                            </a>
+                        </nav>
+                        {% elif session.username==owner_username %}
+                        <nav>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                class="bi bi-fullscreen icon-grey" viewBox="0 0 16 16">
+                                <path
+                                    d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5" />
+                            </svg>
+                        </nav>
                         {% endif %}
                     </div>
-                    {% if box.leaf == 0 %} <!--not a leaf-->
-            </a>
+                    <div class="card-body">
+                        <span class="fs-6 text" text-id="{{ box.text_id }}">
+                            {{ box.text or 'Add Content' }}</span>
+                        {% if box.image_file %}
+                        <img src="{{ url_for('uploaded_image_route', filename=box.image_file) }}" alt="Box Image"
+                            class="fixed-img">
+                        {% endif %}
+                        {% if session.username==owner_username %}
+                        <form action="/api/v1/upload_image?target={{ request.path }}" method="post"
+                            enctype="multipart/form-data">
+                            <input type="file" name="file" required />
+                            <input type="submit" name="submit" value="submit" />
+                            <input type="hidden" name="operation" value="upload" />
+                            <input type="hidden" name="box_id" value="{{box.box_id}}" />
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% if session.username==owner_username %}
+            <div class="card mb-4 hover-card" id="add-card" page-id="{{ page_id }}" onclick="newBox()">
+                <div class="card-header d-flex justify-content-center align-items-center">
+                    <i class="bi bi-plus-lg fw-bold"></i>
+                </div>
+            </div>
             {% endif %}
-            {% endif %}
-            {% endfor %}
-
         </div>
-    </div>
 </main>
-
-<script src="../static/js/sidebar_script.js"></script>
+<script>
+    const userOwnsPage = {{ (session.username == owner_username) | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/infiboxes.js') }}"></script>
 {% endblock %}

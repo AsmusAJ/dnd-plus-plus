@@ -51,6 +51,16 @@ function newBox() {
                     </div>
                     <div class="card-body">
                         <span class="fs-6 text">Add Content</span>
+                        ${userOwnsPage
+                    ? `<form action="/api/v1/upload_image?target={{ request.path }}" method="post"
+            enctype="multipart/form-data">
+              <input type="file" name="file" required />
+              <input type="submit" name="submit" value="submit" />
+              <input type="hidden" name="operation" value="upload" />
+              <input type="hidden" name="box_id" value="{{box.box_id}}" />
+          </form>`
+                    : ""
+                }
                     </div>
 `;
 
@@ -79,7 +89,7 @@ document.getElementById('flexContainer').addEventListener('click', async functio
     const username = document.querySelector('main').getAttribute('username')
 
     let pageId = await createPage(boxTitle, boxId);
-
+    /*
     cardHeader.innerHTML = `
     < h5 class="mb-0 pt-2 pb-2 header" box - id="${boxId}"
 box - title="${boxTitle}" > ${boxTitle}
@@ -96,8 +106,9 @@ box - title="${boxTitle}" > ${boxTitle}
     </nav>`;
     const headerText = cardHeader.querySelector('h5.header');
     headerText.contentEditable = true;
+    */
 
-    window.location.href = `/ users / ${username} /page/${pageId}/`;
+    window.location.href = `/users/${username}/page/${pageId}/`;
 });
 
 function setLayout(mode) {
@@ -129,6 +140,7 @@ function createPage(boxTitle, boxId) {
         .then(response => response.json())
         .then(data => data.page_id);
 }
+
 if (userOwnsPage) {
     window.addEventListener('beforeunload', function () {
         //we redo this to catch newly added items
