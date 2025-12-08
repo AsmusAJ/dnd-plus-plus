@@ -16,15 +16,15 @@ def save_on_unload():
 
     cursor.execute("UPDATE Pages SET page_title=? WHERE page_id=?", (page_title, pageId))
 
-    for header in headers:
-        boxId = header['id']
-        title = header['title']
-        cursor.execute("UPDATE Boxes SET box_title=? WHERE box_id=?", (title, boxId))
-
     for text in texts:
         textId = text['id']
         textContent = text['text']
         cursor.execute("UPDATE Texts SET text_content=? WHERE text_id=?", (textContent, textId))
+
+    for header in headers:
+        boxId = header['id']
+        title = header['title']
+        cursor.execute("UPDATE Boxes SET box_title=? WHERE box_id=?", (title, boxId))
     conn.commit()
 
     #We use this because page is unloaded so user cant use response anyway
