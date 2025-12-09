@@ -14,8 +14,6 @@ def save_on_unload():
     conn = ttrpg.model.get_db()
     cursor = conn.cursor()
 
-    cursor.execute("UPDATE Pages SET page_title=? WHERE page_id=?", (page_title, pageId))
-
     for text in texts:
         textId = text['id']
         textContent = text['text']
@@ -25,6 +23,8 @@ def save_on_unload():
         boxId = header['id']
         title = header['title']
         cursor.execute("UPDATE Boxes SET box_title=? WHERE box_id=?", (title, boxId))
+    
+    cursor.execute("UPDATE Pages SET page_title=? WHERE page_id=?", (page_title, pageId))
     conn.commit()
 
     #We use this because page is unloaded so user cant use response anyway
