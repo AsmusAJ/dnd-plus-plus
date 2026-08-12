@@ -1,6 +1,36 @@
 import flask
 import ttrpg
 
+
+@ttrpg.app.route('/users/<user_url_slug>/campaign/<int:campaign_id_url_slug>/session/create', methods=['POST'])
+def create_session_for_campaign(user_url_slug, campaign_id_url_slug):
+    if 'username' not in flask.session:
+        return flask.redirect('/accounts/login/')
+
+    username = flask.session['username']
+    if username != user_url_slug:
+        return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
+
+    conn = ttrpg.model.get_db()
+    permission_query = conn.execute(
+        "SELECT username FROM CampaignPlayers WHERE username = ? AND campaign_id = ?",
+        (username, campaign_id_url_slug),
+    ).fetchone()
+    if permission_query is None:
+        return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
+
+    session_date = flask.request.form.get('date') or flask.request.form.get('session_date')
+    if not session_date:
+        return flask.abort(400)
+
+    conn.execute(
+        "INSERT INTO Sessions (campaign_id, audio_file, date) VALUES (?, ?, ?)",
+        (campaign_id_url_slug, None, session_date),
+    )
+    conn.commit()
+    return flask.redirect(f'/users/{username}/campaign/{campaign_id_url_slug}/')
+
+
 @ttrpg.app.route('/users/<user_url_slug>/campaign/<int:campaign_id_url_slug>/', methods=['GET'])
 def show_campaign(user_url_slug, campaign_id_url_slug):
     conn = ttrpg.model.get_db()
