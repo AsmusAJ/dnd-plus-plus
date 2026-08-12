@@ -75,6 +75,38 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% if session.username == owner_username %}
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Players</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        {% for player in players %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <span class="fs-5">{{ player }}</span>
+                            {% if player != session.username %}
+                            <form action="{{ url_for('manage_campaign_players', user_url_slug=session.username, campaign_id_url_slug=campaign_id) }}" method="post" class="d-inline">
+                                <input type="hidden" name="action" value="remove">
+                                <input type="hidden" name="username" value="{{ player }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="card-body text-center p-4">
+                            <p class="mb-0 fs-5">No players yet.</p>
+                        </div>
+                        {% endfor %}
+                        <div class="list-group-item p-3">
+                            <form action="{{ url_for('manage_campaign_players', user_url_slug=session.username, campaign_id_url_slug=campaign_id) }}" method="post" class="d-flex gap-2 align-items-center">
+                                <input type="hidden" name="action" value="add">
+                                <input type="text" name="username" class="form-control" placeholder="Add username" required>
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
                 <div>
                     <button class="btn btn-secondary" onclick="setLayout('one')">1 Column</button>
                     <button class="btn btn-secondary" onclick="setLayout('two')">2 Columns</button>

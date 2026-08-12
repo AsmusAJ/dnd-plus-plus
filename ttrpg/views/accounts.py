@@ -118,19 +118,11 @@ def handle_switch_account():
 
 
 def handle_delete():
-    """Handle delete."""
+    """Self-deletion is intentionally disabled."""
     if 'username' not in flask.session:
         return flask.abort(403)
 
-    connection = ttrpg.model.get_db()
-    connection.execute(
-        "DELETE FROM Users "
-        "WHERE username = ? ",
-        (flask.session.get('username'), )
-    )
-    
-    flask.session.clear()
-    return flask.redirect(flask.request.args.get("target", "/"))
+    return flask.abort(403)
 
 
 def handle_edit_account():

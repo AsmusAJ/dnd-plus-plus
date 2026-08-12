@@ -57,6 +57,45 @@ def update_campaign_system(user_url_slug, campaign_id_url_slug):
     return flask.redirect(f'/users/{username}/campaign/{campaign_id_url_slug}/')
 
 
+@ttrpg.app.route('/users/<user_url_slug>/campaign/<int:campaign_id_url_slug>/players', methods=['POST'])
+def manage_campaign_players(user_url_slug, campaign_id_url_slug):
+    if 'username' not in flask.session:
+        return flask.redirect('/accounts/login/')
+
+    username = flask.session['username']
+    if username != user_url_slug:
+        return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
+
+    conn = ttrpg.model.get_db()
+    is_owner = conn.execute(
+        "SELECT owner_username FROM Campaigns WHERE campaign_id = ? AND owner_username = ?",
+        (campaign_id_url_slug, username),
+    ).fetchone()
+    if is_owner is None:
+        return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
+
+    action = flask.request.form.get('action')
+    target_username = flask.request.form.get('username')
+    if not target_username or action not in {'add', 'remove'}:
+        return flask.abort(400)
+
+    if target_username == username:
+        return flask.abort(403)
+
+    if action == 'add':
+        conn.execute(
+            "INSERT OR IGNORE INTO CampaignPlayers (campaign_id, username) VALUES (?, ?)",
+            (campaign_id_url_slug, target_username),
+        )
+    else:
+        conn.execute(
+            "DELETE FROM CampaignPlayers WHERE campaign_id = ? AND username = ?",
+            (campaign_id_url_slug, target_username),
+        )
+    conn.commit()
+    return flask.redirect(f'/users/{username}/campaign/{campaign_id_url_slug}/')
+
+
 @ttrpg.app.route('/users/<user_url_slug>/campaign/<int:campaign_id_url_slug>/', methods=['GET'])
 def show_campaign(user_url_slug, campaign_id_url_slug):
     conn = ttrpg.model.get_db()
@@ -162,6 +201,13 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
         for character in characters
     ]
 
+    players = conn.execute(
+        "SELECT username FROM CampaignPlayers WHERE campaign_id = ? ORDER BY username ASC",
+        (campaign_id_url_slug,),
+    ).fetchall()
+
+    player_names = [player["username"] for player in players]
+
     response = {
         "page_id": page_id,
         "campaign_id": campaign_id_url_slug,
@@ -170,7 +216,8 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
         "campaign_system": campaign_system,
         "boxes": results,
         "sessions": sessions_results,
-        "characters": characters_results
+        "characters": characters_results,
+        "players": player_names,
     }
 
     return flask.render_template("campaign_page.html", **response)
