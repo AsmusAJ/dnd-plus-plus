@@ -44,12 +44,27 @@
                         {% endif %}
                     </div>
                     <div class="list-group list-group-flush">
-                        {% for session in sessions %}
-                        <a class="nav-link d-flex justify-content-between align-items-center p-3 fs-5 list-group-item list-group-item-action"
-                            href="#">
-                            <span class="fs-5">{{ session.date }}</span>
-                            <span class="fs-6">No Audio File</span>
-                        </a>
+                        {% for session_item in sessions %}
+                        <div class="p-3 list-group-item">
+                            <div class="d-flex justify-content-between align-items-center gap-3">
+                                <span class="fs-5">{{ session_item.date }}</span>
+                                {% if session_item.audio_file %}
+                                <audio controls class="flex-grow-1">
+                                    <source src="{{ url_for('uploaded_image_route', filename=session_item.audio_file) }}" type="audio/mpeg">
+                                </audio>
+                                {% else %}
+                                <span class="fs-6 text-muted">No Audio File</span>
+                                {% endif %}
+                            </div>
+                            {% if session.username == owner_username %}
+                            <form action="{{ url_for('upload_audio') }}?target={{ request.path }}" method="post" enctype="multipart/form-data" class="d-flex gap-2 align-items-center mt-3">
+                                <input type="hidden" name="operation" value="upload">
+                                <input type="hidden" name="session_id" value="{{ session_item.session_id }}">
+                                <input type="file" name="file" accept="audio/*" class="form-control form-control-sm" required>
+                                <button type="submit" class="btn btn-sm btn-primary">Upload</button>
+                            </form>
+                            {% endif %}
+                        </div>
                         {% else %}
                         <div class="card-body text-center p-4">
                             <p class="mb-0 fs-5">No sessions yet.</p>
@@ -73,6 +88,18 @@
                             <p class="mb-0 fs-5">No characters yet.</p>
                         </div>
                         {% endfor %}
+                        {% if session.username in players and user_characters %}
+                        <div class="list-group-item p-3">
+                            <form action="{{ url_for('manage_campaign_character', user_url_slug=session.username, campaign_id_url_slug=campaign_id) }}" method="post" class="d-flex gap-2 align-items-center">
+                                <select name="character_id" class="form-select form-select-sm" required>
+                                    {% for option in user_characters %}
+                                    <option value="{{ option.character_id }}">{{ option.page_title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary">Add my character</button>
+                            </form>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% if session.username == owner_username %}

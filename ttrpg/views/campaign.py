@@ -96,6 +96,43 @@ def manage_campaign_players(user_url_slug, campaign_id_url_slug):
     return flask.redirect(f'/users/{username}/campaign/{campaign_id_url_slug}/')
 
 
+@ttrpg.app.route('/users/<user_url_slug>/campaign/<int:campaign_id_url_slug>/characters', methods=['POST'])
+def manage_campaign_character(user_url_slug, campaign_id_url_slug):
+    if 'username' not in flask.session:
+        return flask.redirect('/accounts/login/')
+
+    username = flask.session['username']
+    if username != user_url_slug:
+        return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
+
+    conn = ttrpg.model.get_db()
+    membership = conn.execute(
+        "SELECT username FROM CampaignPlayers WHERE username = ? AND campaign_id = ?",
+        (username, campaign_id_url_slug),
+    ).fetchone()
+    if membership is None:
+        return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
+
+    character_id = flask.request.form.get('character_id')
+    if not character_id:
+        return flask.abort(400)
+
+    character_owner = conn.execute(
+        "SELECT p.owner_username FROM Characters c JOIN Pages p ON c.page_id = p.page_id WHERE c.character_id = ?",
+        (character_id,),
+    ).fetchone()
+    if character_owner is None or character_owner["owner_username"] != username:
+        return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
+
+    conn.execute(
+        "INSERT INTO CampaignPlayers (campaign_id, username, character_id) VALUES (?, ?, ?) "
+        "ON CONFLICT(campaign_id, username) DO UPDATE SET character_id = excluded.character_id",
+        (campaign_id_url_slug, username, character_id),
+    )
+    conn.commit()
+    return flask.redirect(f'/users/{username}/campaign/{campaign_id_url_slug}/')
+
+
 @ttrpg.app.route('/users/<user_url_slug>/campaign/<int:campaign_id_url_slug>/', methods=['GET'])
 def show_campaign(user_url_slug, campaign_id_url_slug):
     conn = ttrpg.model.get_db()
@@ -186,8 +223,8 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
     characters = conn.execute(
         "SELECT p.character_id, d.page_title, d.owner_username "
         "FROM CampaignPlayers p "
-        "JOIN Characters c ON p.character_id = c.character_id "
-        "JOIN Pages d ON c.page_id = d.page_id "
+        "LEFT JOIN Characters c ON p.character_id = c.character_id "
+        "LEFT JOIN Pages d ON c.page_id = d.page_id "
         "WHERE p.campaign_id = ? ",
         (campaign_id_url_slug,)
     ).fetchall()
@@ -199,7 +236,17 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
             "owner_username": character["owner_username"],
         }
         for character in characters
+        if character["character_id"] is not None
     ]
+
+    user_characters = conn.execute(
+        "SELECT c.character_id, p.page_title "
+        "FROM Characters c "
+        "JOIN Pages p ON c.page_id = p.page_id "
+        "WHERE p.owner_username = ? "
+        "ORDER BY p.page_title ASC",
+        (username,),
+    ).fetchall()
 
     players = conn.execute(
         "SELECT username FROM CampaignPlayers WHERE campaign_id = ? ORDER BY username ASC",
@@ -218,6 +265,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
         "sessions": sessions_results,
         "characters": characters_results,
         "players": player_names,
+        "user_characters": user_characters,
     }
 
     return flask.render_template("campaign_page.html", **response)
