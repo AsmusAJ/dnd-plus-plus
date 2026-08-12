@@ -3,28 +3,41 @@ import ttrpg
 
 @ttrpg.app.route('/api/v1/create_page', methods=['POST'])
 def create_page():
-    data = flask.request.get_json()
-    pageTitle = data.get('page_title')
-    ownerUsername = flask.session['username']
-    boxId = data.get('box_id')
+    data = flask.request.get_json(silent=True) or {}
+    page_title = data.get('page_title')
+    owner_username = flask.session.get('username')
+    box_id = data.get('box_id')
 
-    # Save to SQLite
     conn = ttrpg.model.get_db()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "INSERT INTO pages (page_title, owner_username) " \
-        "VALUES (?, ?)", (pageTitle, ownerUsername)
-        )
+    if not owner_username:
+        return flask.jsonify({"success": False, "error": "Not logged in."}), 401
 
-    conn.commit()
-    newId = cursor.lastrowid
+    if not page_title or not box_id:
+        return flask.jsonify({"success": False, "error": "Missing required fields."}), 400
 
     cursor.execute(
-        "UPDATE Texts " \
-        "SET page_id_forward = ?, leaf = 0 " \
-        "WHERE box_id = ?", (newId, boxId)
-        )
-    conn.commit()
+        "SELECT 1 FROM Boxes WHERE box_id = ?",
+        (box_id,),
+    )
+    if cursor.fetchone() is None:
+        return flask.jsonify({"success": False, "error": "Box not found."}), 404
 
-    return flask.jsonify({"success": True, "page_id": newId}), 201
+    cursor.execute(
+        "INSERT INTO Pages (page_title, owner_username) VALUES (?, ?)",
+        (page_title, owner_username),
+    )
+    new_id = cursor.lastrowid
+
+    cursor.execute(
+        "UPDATE Texts SET page_id_forward = ?, leaf = 0 WHERE box_id = ?",
+        (new_id, box_id),
+    )
+
+    if cursor.rowcount == 0:
+        conn.rollback()
+        return flask.jsonify({"success": False, "error": "Box text row not found."}), 404
+
+    conn.commit()
+    return flask.jsonify({"success": True, "page_id": new_id}), 201

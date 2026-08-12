@@ -24,6 +24,7 @@ def create_box():
         "VALUES (?, 1, 'Add Content', 1)", (newId,)
         )
     conn.commit()
+    textId = cursor.lastrowid
 
     #We use this because page is unloaded so user cant use response anyway
-    return flask.jsonify({"success": True, "box_id": newId}), 201  
+    return flask.jsonify({"success": True, "box_id": newId, "text_id": textId}), 201  

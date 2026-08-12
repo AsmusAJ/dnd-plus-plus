@@ -39,8 +39,7 @@ function newBox() {
 
             newBox.innerHTML = `
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 pt-2 pb-2 header box-id="${boxId}"
-                                        box-title="Add Title">Add Title</h5>
+                        <h5 class="mb-0 pt-2 pb-2 header" box-id="${boxId}" box-title="Add Title">Add Title</h5>
                         <nav>
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                                 class="bi bi-fullscreen icon-grey" viewBox="0 0 16 16">
@@ -72,43 +71,61 @@ function newBox() {
 
             // Add to flexbox container
             document.getElementById("flexContainer").appendChild(newBox);
+        })
+        .catch(error => {
+            console.error('Error creating box:', error);
+            alert('Unable to create new box. Please try again.');
         });
 };
 
 //listens for clicks on fullscreen icon
 document.getElementById('flexContainer').addEventListener('click', async function (event) {
     // Find the fullscreen SVG, even if the click happened on a child like <path>
-    let svg = event.target.closest('svg.bi-fullscreen.icon-grey');
+    const svg = event.target.closest('svg.bi-fullscreen.icon-grey');
     if (!svg) return;  // This wasn't a fullscreen grey icon click
 
-    // Find the nearest card-header and its header
     const cardHeader = svg.closest('.card-header');
-    const headerTitle = cardHeader.querySelector('h5.header');
-    const boxTitle = headerTitle.innerText;
+    const headerTitle = cardHeader?.querySelector('h5.header');
+    if (!headerTitle || !cardHeader) {
+        console.error('Could not find card header for fullscreen page creation.');
+        return;
+    }
+
+    const boxTitle = headerTitle.innerText.trim() || 'Untitled';
     const boxId = headerTitle.getAttribute('box-id');
-    const username = document.querySelector('main').getAttribute('username')
+    const username = document.querySelector('main')?.getAttribute('username');
 
-    let pageId = await createPage(boxTitle, boxId);
-    /*
-    cardHeader.innerHTML = `
-    < h5 class="mb-0 pt-2 pb-2 header" box - id="${boxId}"
-box - title="${boxTitle}" > ${boxTitle}
-                                </h5 >
-    <nav>
-        <a
-            href="/users/${username}/page/${pageId}/">
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                class="bi bi-fullscreen icon-black" viewBox="0 0 16 16">
-                <path
-                    d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5" />
-            </svg>
-        </a>
-    </nav>`;
-    const headerText = cardHeader.querySelector('h5.header');
-    headerText.contentEditable = true;
-    */
+    if (!boxId || !username) {
+        console.error('Missing box id or username while creating page.', { boxId, username, boxTitle });
+        alert('Unable to create page from this card. Missing card metadata.');
+        return;
+    }
 
-    window.location.href = `/users/${username}/page/${pageId}/`;
+    try {
+        const pageId = await createPage(boxTitle, boxId);
+        const targetLink = `/users/${username}/page/${pageId}/`;
+        const nav = cardHeader.querySelector('nav');
+        const linkHtml = `
+            <a href="${targetLink}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-fullscreen icon-black" viewBox="0 0 16 16">
+                    <path
+                        d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5" />
+                </svg>
+            </a>`;
+        if (nav) {
+            nav.innerHTML = linkHtml;
+        } else {
+            const newNav = document.createElement('nav');
+            newNav.innerHTML = linkHtml;
+            cardHeader.appendChild(newNav);
+        }
+
+        window.location.href = targetLink;
+    } catch (error) {
+        console.error('Error creating page:', error);
+        alert('Unable to create page from this card. Please try again.');
+    }
 });
 
 function setLayout(mode) {
@@ -137,8 +154,20 @@ function createPage(boxTitle, boxId) {
         body: JSON.stringify(payload),
         credentials: 'include'
     })
-        .then(response => response.json())
-        .then(data => data.page_id);
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.error || 'Create page failed');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.page_id) {
+                throw new Error('Create page returned no page id');
+            }
+            return data.page_id;
+        });
 }
 
 if (userOwnsPage) {
