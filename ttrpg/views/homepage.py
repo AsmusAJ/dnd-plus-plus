@@ -1,6 +1,64 @@
 import flask
 import ttrpg
 
+
+@ttrpg.app.route('/campaigns/create', methods=['POST'])
+def create_campaign_from_homepage():
+    if 'username' not in flask.session:
+        return flask.redirect('/accounts/login/')
+
+    username = flask.session['username']
+    page_title = flask.request.form.get('page_title') or 'New Campaign'
+    campaign_system = flask.request.form.get('campaign_system') or 'Custom'
+
+    conn = ttrpg.model.get_db()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO Pages (page_title, owner_username) VALUES (?, ?)",
+        (page_title, username),
+    )
+    page_id = cursor.lastrowid
+
+    cursor.execute(
+        "INSERT INTO Campaigns (owner_username, page_id, campaign_system) VALUES (?, ?, ?)",
+        (username, page_id, campaign_system),
+    )
+    campaign_id = cursor.lastrowid
+
+    cursor.execute(
+        "INSERT OR IGNORE INTO CampaignPlayers (campaign_id, username) VALUES (?, ?)",
+        (campaign_id, username),
+    )
+    conn.commit()
+    return flask.redirect(f'/users/{username}/campaign/{campaign_id}/')
+
+
+@ttrpg.app.route('/characters/create', methods=['POST'])
+def create_character_from_homepage():
+    if 'username' not in flask.session:
+        return flask.redirect('/accounts/login/')
+
+    username = flask.session['username']
+    page_title = flask.request.form.get('page_title') or 'New Character'
+    character_system = flask.request.form.get('character_system') or 'Custom'
+
+    conn = ttrpg.model.get_db()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO Pages (page_title, owner_username) VALUES (?, ?)",
+        (page_title, username),
+    )
+    page_id = cursor.lastrowid
+
+    cursor.execute(
+        "INSERT INTO Characters (page_id, character_system) VALUES (?, ?)",
+        (page_id, character_system),
+    )
+    character_id = cursor.lastrowid
+    conn.commit()
+    return flask.redirect(f'/users/{username}/character/{character_id}/')
+
+
 @ttrpg.app.route('/')
 def show_homepage():
 

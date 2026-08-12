@@ -1,91 +1,123 @@
-{% extends "base.html" %}
-
-{% block title %}DND++ Dashboard{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}DND++ Dashboard{% endblock %} {%
+block content %}
 <main class="container-fluid p-3 p-lg-4">
-    <div class="row">
-        <div class="col-lg-4">
-
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Upcoming Sessions</h5>
-                    <button class="btn">
-                        <i class="bi bi-plus-lg fw-bold"></i>
-                    </button>
-                </div>
-                <div class="list-group list-group-flush">
-                    {% for current_session in sessions %}
-                    <a class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action"
-                        href="{{ url_for('show_campaign', user_url_slug=session.username, campaign_id_url_slug=current_session.campaign_id) }}">
-                        <span class="fs-5">{{ current_session.page_title }}</span>
-                        <span class="fs-6">{{ current_session.date }}</span>
-                    </a>
-                    {% else %}
-                    <div class="card-body text-center p-4">
-                        <p class="mb-0">No upcoming sessions.</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card mb-4">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Upcoming Sessions</h5>
+          <button class="btn">
+            <i class="bi bi-plus-lg fw-bold"></i>
+          </button>
         </div>
-
-        <div class="col-lg-8">
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Campaigns</h5>
-                    <button class="btn">
-                        <i class="bi bi-plus-lg fw-bold"></i>
-                    </button>
-                </div>
-                <div class="list-group list-group-flush">
-
-                    {% for campaign in campaigns %}
-                    <a class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action"
-                        href="{{ url_for('show_campaign', user_url_slug=session.username, campaign_id_url_slug=campaign.campaign_id) }}">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="fs-5">{{ campaign.page_title }}</span>
-                            {% if campaign.owner_username == session.username %}
-                            <span class="badge bg-success-subtle text-success-emphasis">You own this</span>
-                            {% else %}
-                            <span class="badge bg-secondary-subtle text-secondary-emphasis">Owned by {{ campaign.owner_username }}</span>
-                            {% endif %}
-                        </div>
-                        <span class="fs-6">{{ campaign.system }}</span>
-                    </a>
-                    {% else %}
-                    <div class="card-body text-center p-4">
-                        <p class="mb-0 fs-5">No recent campaigns.</p>
-                    </div>
-                    {% endfor %}
-
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Characters</h5>
-                    <button class="btn">
-                        <i class="bi bi-plus-lg fw-bold"></i>
-                    </button>
-                </div>
-                <div class="list-group list-group-flush">
-                    {% for character in characters %}
-                    <a class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action"
-                        href="{{ url_for('show_character', user_url_slug=session.username, character_id_url_slug=character.character_id) }}">
-                        <span class="fs-5">{{ character.page_title }}</span>
-                        <span class="fs-6">{{ character.system }}</span>
-                    </a>
-                    {% else %}
-                    <div class="card-body text-center p-4">
-                        <p class="mb-0">No characters</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
+        <div class="list-group list-group-flush">
+          {% for current_session in sessions %}
+          <a
+            class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action"
+            href="{{ url_for('show_campaign', user_url_slug=session.username, campaign_id_url_slug=current_session.campaign_id) }}"
+          >
+            <span class="fs-5">{{ current_session.page_title }}</span>
+            <span class="fs-6">{{ current_session.date }}</span>
+          </a>
+          {% else %}
+          <div class="card-body text-center p-4">
+            <p class="mb-0">No upcoming sessions.</p>
+          </div>
+          {% endfor %}
         </div>
+      </div>
     </div>
+
+    <div class="col-lg-8">
+      <div class="card mb-4">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Recent Campaigns</h5>
+          <form
+            action="{{ url_for('create_campaign_from_homepage') }}"
+            method="post"
+            class="d-inline"
+          >
+            <input type="hidden" name="page_title" value="New Campaign" />
+            <input type="hidden" name="campaign_system" value="Custom" />
+            <button
+              class="btn"
+              type="submit"
+              aria-label="Create a new campaign"
+            >
+              <i class="bi bi-plus-lg fw-bold"></i>
+            </button>
+          </form>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for campaign in campaigns %}
+          <a
+            class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action"
+            href="{{ url_for('show_campaign', user_url_slug=session.username, campaign_id_url_slug=campaign.campaign_id) }}"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <span class="fs-5">{{ campaign.page_title }}</span>
+              {% if campaign.owner_username == session.username %}
+              <span class="badge bg-success-subtle text-success-emphasis"
+                >You own this</span
+              >
+              {% else %}
+              <span class="badge bg-secondary-subtle text-secondary-emphasis"
+                >Owned by {{ campaign.owner_username }}</span
+              >
+              {% endif %}
+            </div>
+            <span class="fs-6">{{ campaign.system }}</span>
+          </a>
+          {% else %}
+          <div class="card-body text-center p-4">
+            <p class="mb-0 fs-5">No recent campaigns.</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Recent Characters</h5>
+          <form
+            action="{{ url_for('create_character_from_homepage') }}"
+            method="post"
+            class="d-inline"
+          >
+            <input type="hidden" name="page_title" value="New Character" />
+            <input type="hidden" name="character_system" value="Custom" />
+            <button
+              class="btn"
+              type="submit"
+              aria-label="Create a new character"
+            >
+              <i class="bi bi-plus-lg fw-bold"></i>
+            </button>
+          </form>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for character in characters %}
+          <a
+            class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action"
+            href="{{ url_for('show_character', user_url_slug=session.username, character_id_url_slug=character.character_id) }}"
+          >
+            <span class="fs-5">{{ character.page_title }}</span>
+            <span class="fs-6">{{ character.system }}</span>
+          </a>
+          {% else %}
+          <div class="card-body text-center p-4">
+            <p class="mb-0">No characters</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 {% endblock %}
