@@ -53,8 +53,11 @@ def show_character(character_id_url_slug, user_url_slug):
 
     boxes = boxes_query.fetchall()
 
-    results = [
-        {
+    visible_boxes = []
+    for box in boxes:
+        if box["show_all_players"] == 0 and username != owner_username:
+            continue
+        visible_boxes.append({
             "box_id": box["box_id"],
             "box_title": box["box_title"],
             "show_all_players": box["show_all_players"],
@@ -63,10 +66,10 @@ def show_character(character_id_url_slug, user_url_slug):
             "page_id_forward": box["page_id_forward"],
             "leaf": box["leaf"],
             "image_id": box["image_id"],
-            "image_file": box["image_file"],            
-        }
-        for box in boxes
-    ]
+            "image_file": box["image_file"],
+        })
+
+    results = visible_boxes
 
     response = {
         "page_id": page_id,

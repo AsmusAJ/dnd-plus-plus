@@ -44,7 +44,14 @@
                     {% for campaign in campaigns %}
                     <a class="nav-link d-flex justify-content-between align-items-center p-4 fs-5 list-group-item list-group-item-action"
                         href="{{ url_for('show_campaign', user_url_slug=session.username, campaign_id_url_slug=campaign.campaign_id) }}">
-                        <span class="fs-5">{{ campaign.page_title }}</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fs-5">{{ campaign.page_title }}</span>
+                            {% if campaign.owner_username == session.username %}
+                            <span class="badge bg-success-subtle text-success-emphasis">You own this</span>
+                            {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis">Owned by {{ campaign.owner_username }}</span>
+                            {% endif %}
+                        </div>
                         <span class="fs-6">{{ campaign.system }}</span>
                     </a>
                     {% else %}
