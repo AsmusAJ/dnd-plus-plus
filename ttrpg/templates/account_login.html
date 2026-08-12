@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -16,37 +16,82 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
   </head>
 
   <body>
     <div class="bg-body min-vh-100">
-      <!-- makes background color-->
-      <div id="header-placeholder"></div>
-
-      <form
-        action="/accounts/?target=/"
-        method="post"
-        enctype="multipart/form-data"
+      <nav
+        class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top"
       >
-        <input type="text" name="username" required />
-        <input type="password" name="password" required />
-        <input type="submit" value="login" />
-        <input type="hidden" name="operation" value="login" />
-      </form>
+        <div class="container-fluid">
+          <a class="navbar-brand fw-bold" href="{{ url_for('show_homepage') }}"
+            >DND++</a
+          >
+        </div>
+      </nav>
 
-      <div>
-        <p>
-          Don't have an account? <a href="/accounts/create/"><b> Sign up</b></a>
-        </p>
+      <div class="auth-page">
+        <div class="card auth-card">
+          <div class="card-header text-center">
+            <h3 class="mb-0">Welcome back</h3>
+          </div>
+          <div class="card-body">
+            {% if error %}
+            <div class="alert alert-danger" role="alert">{{ error }}</div>
+            {% endif %}
+
+            <form
+              action="/accounts/?target={{ request.args.get('target', '/') }}"
+              method="post"
+              enctype="multipart/form-data"
+              class="auth-form"
+            >
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  name="username"
+                  value="{{ username or '' }}"
+                  required
+                />
+              </div>
+
+              <div class="mb-4">
+                <label for="password" class="form-label">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100">
+                Log in
+              </button>
+              <input type="hidden" name="operation" value="login" />
+            </form>
+
+            <div class="text-center mt-4 mb-0 auth-subtle">
+              Need an account?
+              <a href="/accounts/create/" class="auth-link">Sign up</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN6jIeHz"
       crossorigin="anonymous"
     ></script>
-
-    <script src="../static/js/header_script.js"></script>
   </body>
 </html>

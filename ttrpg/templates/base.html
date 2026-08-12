@@ -35,7 +35,20 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto">
-
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ session.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                                <li>
+                                    <form action="{{ url_for('accounts') }}?target={{ request.path }}" method="post">
+                                        <input type="hidden" name="operation" value="switch_account" />
+                                        <button type="submit" class="dropdown-item">Switch account</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
 
                     {% else %}

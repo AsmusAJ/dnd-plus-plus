@@ -16,25 +16,60 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   </head>
 
   <body>
     <div class="bg-body min-vh-100">
-      <!-- makes background color-->
-      <div id="header-placeholder"></div>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+        <div class="container-fluid">
+          <a class="navbar-brand fw-bold" href="{{ url_for('show_homepage') }}">DND++</a>
+        </div>
+      </nav>
 
-      <form
-        action="/accounts/?target=/accounts/login/"
-        method="post"
-        enctype="multipart/form-data"
-      >
-        <input type="file" name="file" />
-        <input type="text" name="username" required />
-        <input type="text" name="email" required />
-        <input type="password" name="password" required />
-        <input type="submit" name="signup" value="sign up" />
-        <input type="hidden" name="operation" value="create" />
-      </form>
+      <div class="auth-page">
+        <div class="card auth-card">
+          <div class="card-header text-center">
+            <h3 class="mb-0">Create account</h3>
+          </div>
+          <div class="card-body">
+            <form
+              action="/accounts/?target=/accounts/login/"
+              method="post"
+              enctype="multipart/form-data"
+              class="auth-form"
+            >
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="file" class="form-label">Profile picture</label>
+                <input type="file" class="form-control" id="file" name="file" />
+              </div>
+
+              <div class="mb-4">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required />
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100">Sign up</button>
+              <input type="hidden" name="operation" value="create" />
+            </form>
+
+            <div class="text-center mt-4 mb-0 auth-subtle">
+              Already have an account?
+              <a href="/accounts/login/" class="auth-link">Log in</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script
@@ -42,7 +77,5 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-
-    <script src="../static/js/header_script.js"></script>
   </body>
 </html>

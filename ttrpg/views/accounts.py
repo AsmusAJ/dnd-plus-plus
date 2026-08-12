@@ -3,6 +3,7 @@ import hashlib
 import pathlib
 import flask
 import ttrpg 
+from urllib.parse import quote
 
 @ttrpg.app.route("/accounts/", methods=["POST"])
 def accounts():
@@ -18,6 +19,8 @@ def accounts():
         return handle_edit_account()
     if operation == "update_password":
         return handle_update_password()
+    if operation == "switch_account":
+        return handle_switch_account()
 
     return flask.abort(400)
 
@@ -40,10 +43,7 @@ def handle_login():
     if (not username) or (not password):
         return flask.abort(400)
 
-    # Connect to the database
     connection = ttrpg.model.get_db()
-
-    # get db password for comparison
     post_query = connection.execute(
         "SELECT password "
         "FROM Users "
@@ -53,15 +53,22 @@ def handle_login():
     db_password = post_query.fetchone()
 
     if db_password is None:
-        return flask.abort(403)
+        return flask.render_template(
+            'account_login.html',
+            error='Incorrect username or password.',
+            username=username,
+        )
 
     _, salt, _ = db_password['password'].split('$')
     computed_hash = hash_password(password, salt)
 
     if computed_hash != db_password['password']:
-        return flask.abort(403)
+        return flask.render_template(
+            'account_login.html',
+            error='Incorrect username or password.',
+            username=username,
+        )
 
-    # session cookie
     flask.session['username'] = username
     return flask.redirect("/")
 
@@ -101,6 +108,13 @@ def save_file(file, filename):
     path = ttrpg.app.config["UPLOAD_FOLDER"] / uuid_basename
     file.save(path)
     return path
+
+
+def handle_switch_account():
+    """Clear current session so the user can log in as a different account."""
+    target = flask.request.args.get("target", "/")
+    flask.session.clear()
+    return flask.redirect(f"/accounts/login/?target={quote(target, safe='/')}")
 
 
 def handle_delete():

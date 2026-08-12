@@ -1,27 +1,84 @@
 .hover-card:hover,
 .hover-card:focus {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    border-color: #0d6efd;
-    /* Bootstrap's primary */
-    cursor: pointer;
-    transition: box-shadow 0.2s, border-color 0.2s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-color: #0d6efd;
+  /* Bootstrap's primary */
+  cursor: pointer;
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
 }
 
 .icon-grey {
-    color: #818487;
-    cursor: pointer;
+  color: #818487;
+  cursor: pointer;
 }
 
 .icon-black {
-    color: #000;
+  color: #000;
 }
 
 .card.two-col {
-    flex: 0 0 48%;
-    margin-bottom: 1rem;
+  flex: 0 0 48%;
+  margin-bottom: 1rem;
 }
 
 .fixed-img {
-    max-height: 400px;
-    max-width: 100%;
+  max-height: 400px;
+  max-width: 100%;
+}
+
+.auth-page {
+  min-height: calc(100vh - 72px);
+  background: linear-gradient(180deg, #f8f9fa 0%, #eef3ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid rgba(13, 110, 253, 0.08);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(13, 110, 253, 0.08);
+  overflow: hidden;
+}
+
+.auth-card .card-header {
+  background: #0d6efd;
+  color: white;
+  border-bottom: none;
+  padding: 1.25rem 1.5rem;
+}
+
+.auth-card .card-body {
+  padding: 1.75rem 1.5rem 1.5rem;
+}
+
+.auth-form .form-control {
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+}
+
+.auth-form .btn-primary {
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+
+.auth-link {
+  color: #0d6efd;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.auth-subtle {
+  color: #6c757d;
+  font-size: 0.95rem;
 }
