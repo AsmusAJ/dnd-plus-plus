@@ -3,6 +3,32 @@ import uuid
 import pathlib
 import ttrpg
 
+@ttrpg.app.route('/users/<user_url_slug>/character/<int:character_id_url_slug>/system', methods=['POST'])
+def update_character_system(user_url_slug, character_id_url_slug):
+    if 'username' not in flask.session:
+        return flask.redirect('/accounts/login/')
+
+    username = flask.session['username']
+    if username != user_url_slug:
+        return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
+
+    conn = ttrpg.model.get_db()
+    permission = conn.execute(
+        "SELECT p.owner_username FROM Characters c JOIN Pages p ON c.page_id = p.page_id WHERE c.character_id = ?",
+        (character_id_url_slug,),
+    ).fetchone()
+    if permission is None or permission["owner_username"] != username:
+        return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
+
+    character_system = flask.request.form.get('character_system') or 'Custom'
+    conn.execute(
+        "UPDATE Characters SET character_system = ? WHERE character_id = ?",
+        (character_system, character_id_url_slug),
+    )
+    conn.commit()
+    return flask.redirect(f'/users/{username}/character/{character_id_url_slug}/')
+
+
 @ttrpg.app.route('/users/<user_url_slug>/character/<int:character_id_url_slug>/', methods=['GET'])
 def show_character(character_id_url_slug, user_url_slug):
     conn = ttrpg.model.get_db()
@@ -28,7 +54,7 @@ def show_character(character_id_url_slug, user_url_slug):
     #    return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
 
     character = conn.execute(
-        "SELECT c.page_id, p.owner_username, p.page_title "
+        "SELECT c.page_id, c.character_system, p.owner_username, p.page_title "
         "FROM Characters c "
         "JOIN Pages p ON c.page_id = p.page_id "
         "WHERE c.character_id = ? ",
@@ -36,6 +62,7 @@ def show_character(character_id_url_slug, user_url_slug):
     ).fetchone()
 
     page_id = character["page_id"]
+    character_system = character["character_system"]
 
     owner_username = character["owner_username"]
 
@@ -77,6 +104,7 @@ def show_character(character_id_url_slug, user_url_slug):
         "user_url_slug": user_url_slug,
         "owner_username": owner_username,
         "page_title": page_title,
+        "character_system": character_system,
         "boxes": results
     }
 

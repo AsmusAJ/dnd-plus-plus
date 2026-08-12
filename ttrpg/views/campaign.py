@@ -31,6 +31,32 @@ def create_session_for_campaign(user_url_slug, campaign_id_url_slug):
     return flask.redirect(f'/users/{username}/campaign/{campaign_id_url_slug}/')
 
 
+@ttrpg.app.route('/users/<user_url_slug>/campaign/<int:campaign_id_url_slug>/system', methods=['POST'])
+def update_campaign_system(user_url_slug, campaign_id_url_slug):
+    if 'username' not in flask.session:
+        return flask.redirect('/accounts/login/')
+
+    username = flask.session['username']
+    if username != user_url_slug:
+        return flask.jsonify({"message": "Forbidden", "status_code": 403}), 403
+
+    conn = ttrpg.model.get_db()
+    permission_query = conn.execute(
+        "SELECT username FROM CampaignPlayers WHERE username = ? AND campaign_id = ?",
+        (username, campaign_id_url_slug),
+    ).fetchone()
+    if permission_query is None:
+        return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
+
+    campaign_system = flask.request.form.get('campaign_system') or 'Custom'
+    conn.execute(
+        "UPDATE Campaigns SET campaign_system = ? WHERE campaign_id = ?",
+        (campaign_system, campaign_id_url_slug),
+    )
+    conn.commit()
+    return flask.redirect(f'/users/{username}/campaign/{campaign_id_url_slug}/')
+
+
 @ttrpg.app.route('/users/<user_url_slug>/campaign/<int:campaign_id_url_slug>/', methods=['GET'])
 def show_campaign(user_url_slug, campaign_id_url_slug):
     conn = ttrpg.model.get_db()
@@ -58,7 +84,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
         return flask.jsonify({"message": "Forbidden.", "status_code": 403}), 403
 
     campaign = conn.execute(
-        "SELECT c.page_id, p.owner_username, p.page_title "
+        "SELECT c.page_id, c.campaign_system, p.owner_username, p.page_title "
         "FROM Campaigns c "
         "JOIN Pages p ON c.page_id = p.page_id "
         "WHERE c.campaign_id = ? ",
@@ -66,6 +92,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
     ).fetchone()
 
     page_id = campaign["page_id"]
+    campaign_system = campaign["campaign_system"]
 
     owner_username = campaign["owner_username"]
 
@@ -140,6 +167,7 @@ def show_campaign(user_url_slug, campaign_id_url_slug):
         "campaign_id": campaign_id_url_slug,
         "owner_username": owner_username,
         "page_title": page_title,
+        "campaign_system": campaign_system,
         "boxes": results,
         "sessions": sessions_results,
         "characters": characters_results
