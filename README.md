@@ -1,4 +1,4 @@
-# dnd-plus-plus
+# DND++
 
 Compact TTRPG campaign manager focused on server-rendered pages, small frontend controls, and test-driven behavior.
 
